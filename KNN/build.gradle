@@ -8,6 +8,6 @@ repositories {
 }
 
 dependencies {
-    project('TestModule')
+    compile project(':TestModule')
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
