@@ -28,7 +28,7 @@ public class Main {
             sample.add(new Point(x, y, value));
         }
 
-        Distance<Point, Double> distance = new EuclideanDistance();
+        Distance<Point, Double> distance = EuclideanDistance.getInstance();
         KNN<Point> knn = new KNN<>(sample, distance, new LinearWeight<>(distance), 10);
         System.out.println(knn.getSupposedClassId(new Point(10, 10)));
     }
