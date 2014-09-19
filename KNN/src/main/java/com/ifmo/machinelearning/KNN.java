@@ -55,7 +55,7 @@ public class KNN<T extends ClassifiedData> implements Classifier<T> {
         for (int i = 0; i < weights.length; i++) {
             if (maxWeight < weights[i]) {
                 maxWeight = weights[i];
-                maxId = 0;
+                maxId = i;
             }
         }
 
