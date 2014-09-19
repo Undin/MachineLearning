@@ -29,7 +29,7 @@ public class KNN<T extends ClassifiedData> implements Classifier<T> {
     @Override
     public int getSupposedClassId(T t) {
         double[] distances = new double[trainingSample.size()];
-        List<Integer> ids = new ArrayList<>();
+        List<Integer> ids = new ArrayList<>(trainingSample.size());
         for (int i = 0; i < distances.length; i++) {
             ids.add(i);
             distances[i] = distanceFunction.distance(t, trainingSample.get(i));
