@@ -2,11 +2,11 @@ package com.ifmo.machinelearning;
 
 /**
  * Interface class that has the following methods:
- * {@link com.ifmo.machinelearning.Metrica#distanceTo(Object, Object)}
+ * {@link Distance#distanceTo(Object, Object)}
  * <p/>
  * Created by Whiplash on 15.09.2014.
  */
-public interface Metrica<T, E> {
+public interface Distance<T, E> {
 
     /**
      * Measures distance between {@code first} and {@code second}
