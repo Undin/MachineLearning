@@ -25,6 +25,9 @@ public abstract class TestMachine<T extends ClassifiedData> {
     abstract protected Classifier<T> createClassifier(List<T> dataSet);
 
     public Statistics test(List<T> dataSet) {
+        if (dataSet == null || dataSet.isEmpty()) {
+            throw new IllegalArgumentException("dataSet must be not empty");
+        }
         switch (testType) {
             case CROSS_VALIDATION:
                 return crossValidationTest(dataSet);
@@ -38,9 +41,6 @@ public abstract class TestMachine<T extends ClassifiedData> {
     }
 
     private Statistics crossValidationTest(List<T> dataSet) {
-        if (dataSet == null || dataSet.isEmpty()) {
-            throw new IllegalArgumentException("dataSet must be not empty");
-        }
         final int foldSize = dataSet.size() / FOLD_COUNT;
         List<T> trainingData = new ArrayList<>(dataSet.size() - foldSize);
         List<T> testData = new ArrayList<>(foldSize);
