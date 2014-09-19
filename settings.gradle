@@ -1,5 +1,5 @@
 rootProject.name = 'MachineLearningFramework'
 
 include 'TestModule'
+include 'AlgorithmLibrary'
 include 'KNN'
-

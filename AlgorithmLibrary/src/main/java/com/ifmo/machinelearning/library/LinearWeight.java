@@ -1,4 +1,4 @@
-package com.ifmo.machinelearning;
+package com.ifmo.machinelearning.library;
 
 /**
  * Created by Whiplash on 19.09.2014.

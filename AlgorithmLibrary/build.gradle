@@ -5,6 +5,5 @@ repositories {
 }
 
 dependencies {
-    compile project(':AlgorithmLibrary')
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }

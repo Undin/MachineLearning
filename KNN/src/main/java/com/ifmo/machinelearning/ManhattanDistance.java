@@ -1,5 +1,7 @@
 package com.ifmo.machinelearning;
 
+import com.ifmo.machinelearning.library.Distance;
+
 import static java.lang.StrictMath.abs;
 
 /**

@@ -1,5 +1,8 @@
 package com.ifmo.machinelearning.test;
 
+import com.ifmo.machinelearning.library.ClassifiedData;
+import com.ifmo.machinelearning.library.Classifier;
+
 import java.util.ArrayList;
 import java.util.List;
 

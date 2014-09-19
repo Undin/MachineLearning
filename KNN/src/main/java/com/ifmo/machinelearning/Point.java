@@ -1,6 +1,6 @@
 package com.ifmo.machinelearning;
 
-import com.ifmo.machinelearning.test.ClassifiedData;
+import com.ifmo.machinelearning.library.ClassifiedData;
 
 /**
  * Created by warrior on 19.09.14.
