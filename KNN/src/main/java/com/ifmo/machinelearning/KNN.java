@@ -5,7 +5,6 @@ import com.ifmo.machinelearning.test.Classifier;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -38,12 +37,7 @@ public class KNN<T extends ClassifiedData> implements Classifier<T> {
             ids.add(i);
             distances[i] = distanceFunction.distance(t, trainingSample.get(i));
         }
-        Collections.sort(ids, new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return Double.compare(distances[o1], distances[o2]);
-            }
-        });
+        Collections.sort(ids, (Integer o1, Integer o2) -> Double.compare(distances[o1], distances[o2]));
 
         double[] weights = new double[t.getClassNumber()];
         for (int i = 0; i < k; i++) {
