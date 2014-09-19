@@ -3,17 +3,15 @@ package com.ifmo.machinelearning.library;
 /**
  * Created by Whiplash on 19.09.2014.
  */
-public class LinearWeight<T> implements Weight<T, Double> {
+public class LinearWeight<T> extends DistanceWeight<T> {
 
-    private Distance<T, Double> distanceFunction;
-
-    public LinearWeight(Distance<T, Double> distanceFunction) {
-        this.distanceFunction = distanceFunction;
+    public LinearWeight(Distance<T, Double> distance) {
+        super(distance);
     }
 
     @Override
     public Double weight(T first, T second) {
-        return 1 / distanceFunction.distance(first, second);
+        return 1 / distance(first, second);
     }
 
 }
