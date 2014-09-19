@@ -5,7 +5,7 @@ package com.ifmo.machinelearning.test;
  */
 public interface Classifier<T extends ClassifiedData> {
 
-    public void training();
+    public Classifier<T> training();
 
     public int getSupposedClassId(T t);
 
