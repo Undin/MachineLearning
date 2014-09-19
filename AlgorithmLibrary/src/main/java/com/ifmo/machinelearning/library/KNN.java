@@ -14,11 +14,11 @@ public class KNN<T extends ClassifiedData> implements Classifier<T> {
     private Weight<T, Double> weightFunction;
     private int k;
 
-    public KNN(List<T> trainingSample, Distance<T, Double> distanceFunction, Weight<T, Double> weightFunction, int k) {
-        this.trainingSample = trainingSample;
+    public KNN(List<T> sample, Distance<T, Double> distanceFunction, Weight<T, Double> weightFunction, int k) {
+        this.trainingSample = sample;
         this.distanceFunction = distanceFunction;
         this.weightFunction = weightFunction;
-        this.k = k;
+        this.k = Math.min(k, sample.size());
     }
 
     @Override

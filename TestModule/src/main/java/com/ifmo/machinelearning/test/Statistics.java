@@ -44,7 +44,7 @@ public class Statistics {
         return 2 * precision * recall / (precision + recall);
     }
 
-    public double getfDistance() {
+    public double getFDistance() {
         return fDistance;
     }
 

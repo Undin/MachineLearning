@@ -1,8 +1,7 @@
 package com.ifmo.machinelearning.homework1;
 
-import com.ifmo.machinelearning.library.Distance;
-import com.ifmo.machinelearning.library.KNN;
-import com.ifmo.machinelearning.library.LinearWeight;
+import com.ifmo.machinelearning.test.Statistics;
+import com.ifmo.machinelearning.test.TestMachine;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -28,9 +27,19 @@ public class Main {
             sample.add(new Point(x, y, value));
         }
 
-        Distance<Point, Double> distance = EuclideanDistance.getInstance();
-        KNN<Point> knn = new KNN<>(sample, distance, new LinearWeight<>(distance), 10);
-        System.out.println(knn.getSupposedClassId(new Point(10, 10)));
+        KNNTestMachine testMachine = new KNNTestMachine(TestMachine.TestType.CROSS_VALIDATION);
+        int n = sample.size() / 5 * 4;
+        double[] xAxis = new double[n - 1];
+        double[] yAxis = new double[n - 1];
+        for (int k = 1; k < n; k++) {
+            testMachine.setK(k);
+            Statistics statistics = testMachine.test(sample);
+            xAxis[k - 1] = k;
+            yAxis[k - 1] = statistics.getFDistance();
+        }
+        Plot2DBuilder builder = new Plot2DBuilder("k", "F-Measure");
+        builder.addPlot("Test", xAxis, yAxis);
+        builder.show();
     }
 
 }
