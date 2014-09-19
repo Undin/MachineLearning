@@ -33,4 +33,9 @@ public class Point implements ClassifiedData {
     public int getClassId() {
         return classId;
     }
+
+    @Override
+    public int getClassNumber() {
+        return 2;
+    }
 }

@@ -7,4 +7,6 @@ public interface ClassifiedData {
 
     public int getClassId();
 
+    public int getClassNumber();
+
 }

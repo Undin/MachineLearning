@@ -8,7 +8,7 @@ import static java.lang.StrictMath.abs;
 public class ManhattanDistance implements Distance<Point, Double> {
 
     @Override
-    public Double distanceTo(Point first, Point second) {
+    public Double distance(Point first, Point second) {
         return abs(first.getX() - second.getX()) + abs(first.getY() - second.getY());
     }
 

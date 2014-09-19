@@ -9,7 +9,7 @@ import static java.lang.StrictMath.sqrt;
 public class EuclideanDistance implements Distance<Point, Double> {
 
     @Override
-    public Double distanceTo(Point first, Point second) {
+    public Double distance(Point first, Point second) {
         return sqrt(pow(first.getX() - second.getX(), 2) + pow(first.getY() - second.getY(), 2));
     }
 
