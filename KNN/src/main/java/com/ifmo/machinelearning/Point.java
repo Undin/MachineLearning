@@ -1,28 +1,24 @@
 package com.ifmo.machinelearning;
 
+import com.ifmo.machinelearning.test.ClassifiedData;
+
 /**
  * Created by warrior on 19.09.14.
  */
-public class Point {
-
-    public static enum PointClass {
-        FIRST,
-        SECOND,
-        UNDEFINED
-    }
+public class Point implements ClassifiedData {
 
     private double x;
     private double y;
-    private PointClass pointClass;
+    private int classId;
 
-    public Point(double x, double y, PointClass pointClass) {
+    public Point(double x, double y, int classId) {
         this.x = x;
         this.y = y;
-        this.pointClass = pointClass;
+        this.classId = classId;
     }
 
     public Point(double x, double y) {
-        this(x, y, PointClass.UNDEFINED);
+        this(x, y, -1);
     }
 
     public double getX() {
@@ -33,7 +29,8 @@ public class Point {
         return y;
     }
 
-    public PointClass getPointClass() {
-        return pointClass;
+    @Override
+    public int getClassId() {
+        return classId;
     }
 }

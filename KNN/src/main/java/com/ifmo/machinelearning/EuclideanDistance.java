@@ -1,15 +1,16 @@
 package com.ifmo.machinelearning;
 
+import static java.lang.StrictMath.pow;
+import static java.lang.StrictMath.sqrt;
+
 /**
  * Created by warrior on 19.09.14.
  */
 public class EuclideanDistance implements Distance<Point, Double> {
+
     @Override
     public Double distanceTo(Point first, Point second) {
-        return StrictMath.sqrt(sqr(first.getX() - second.getX() + sqr(first.getY() - second.getY())));
+        return sqrt(pow(first.getX() - second.getX(), 2) + pow(first.getY() - second.getY(), 2));
     }
 
-    private double sqr(double x) {
-        return x * x;
-    }
 }
