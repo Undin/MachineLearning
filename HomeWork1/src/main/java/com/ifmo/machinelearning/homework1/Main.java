@@ -1,7 +1,6 @@
 package com.ifmo.machinelearning.homework1;
 
 import com.ifmo.machinelearning.test.Statistics;
-import com.ifmo.machinelearning.test.TestMachine;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -15,6 +14,9 @@ import java.util.StringTokenizer;
  */
 public class Main {
 
+    private static final int FOLD_NUMBER = 5;
+    private static final int ROUNDS = 20;
+
     public static void main(String[] args) throws IOException {
         List<Point> sample = new ArrayList<>();
         BufferedReader bf = new BufferedReader(new FileReader("chips.txt"));
@@ -27,15 +29,15 @@ public class Main {
             sample.add(new Point(x, y, value));
         }
 
-        KNNTestMachine testMachine = new KNNTestMachine(TestMachine.TestType.CROSS_VALIDATION);
-        int n = sample.size() / 5 * 4;
+        KNNTestMachine testMachine = new KNNTestMachine(sample);
+        int n = (sample.size() / FOLD_NUMBER) * (FOLD_NUMBER - 1);
         double[] xAxis = new double[n - 1];
         double[] yAxis = new double[n - 1];
         for (int k = 1; k < n; k++) {
             testMachine.setK(k);
-            Statistics statistics = testMachine.test(sample);
+            Statistics statistics = testMachine.crossValidationTest(FOLD_NUMBER, ROUNDS);
             xAxis[k - 1] = k;
-            yAxis[k - 1] = statistics.getFDistance();
+            yAxis[k - 1] = statistics.getTestFDistance();
         }
         Plot2DBuilder builder = new Plot2DBuilder("k", "F-Measure");
         builder.addPlot("Test", xAxis, yAxis);

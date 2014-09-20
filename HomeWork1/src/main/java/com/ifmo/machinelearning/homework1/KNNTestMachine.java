@@ -15,8 +15,8 @@ public class KNNTestMachine extends TestMachine<Point> {
 
     private int k = 1;
 
-    public KNNTestMachine(TestType testType) {
-        super(testType);
+    public KNNTestMachine(List<Point> dataSet) {
+        super(dataSet);
     }
 
     public void setK(int k) {
