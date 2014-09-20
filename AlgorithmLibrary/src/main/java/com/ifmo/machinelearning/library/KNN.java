@@ -1,6 +1,7 @@
 package com.ifmo.machinelearning.library;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,17 +29,15 @@ public class KNN<T extends ClassifiedData> implements Classifier<T> {
 
     @Override
     public int getSupposedClassId(T t) {
+        Integer[] ids = new Integer[trainingSample.size()];
         double[] distances = new double[trainingSample.size()];
-        List<Integer> ids = new ArrayList<>(trainingSample.size());
-        for (int i = 0; i < distances.length; i++) {
-            ids.add(i);
-            distances[i] = distanceFunction.distance(t, trainingSample.get(i));
-        }
-        Collections.sort(ids, (Integer o1, Integer o2) -> Double.compare(distances[o1], distances[o2]));
+        Arrays.setAll(ids, i -> i);
+        Arrays.setAll(distances, i -> distanceFunction.distance(t, trainingSample.get(i)));
+        Arrays.sort(ids, (Integer o1, Integer o2) -> Double.compare(distances[o1], distances[o2]));
 
         double[] weights = new double[t.getClassNumber()];
         for (int i = 0; i < k; i++) {
-            weights[trainingSample.get(ids.get(i)).getClassId()] += weightFunction.weight(t, trainingSample.get(i));
+            weights[trainingSample.get(ids[i]).getClassId()] += weightFunction.weight(t, trainingSample.get(i));
         }
 
         double maxWeight = 0;
