@@ -5,54 +5,125 @@ package com.ifmo.machinelearning.test;
  */
 public class Statistics {
 
-    private double fDistance;
-    private double precision;
-    private double recall;
+    private double testFDistance;
+    private double testPrecision;
+    private double testRecall;
+    private double trainingFDistance;
+    private double trainingPrecision;
+    private double trainingRecall;
+    private boolean hasTrainingStatistic;
 
-    public Statistics(double precision, double recall) {
-        this.precision = precision;
-        this.recall = recall;
-        fDistance = computeFDistance(precision, recall);
+    public Statistics(double testPrecision, double testRecall) {
+        this.testPrecision = testPrecision;
+        this.testRecall = testRecall;
+        testFDistance = computeFDistance(testPrecision, testRecall);
     }
 
-    public Statistics(int[][] confusionMatrix) {
-        if (confusionMatrix == null) {
-            throw new IllegalArgumentException("confusionMatrix must be not null");
-        }
-        if (confusionMatrix.length != confusionMatrix[0].length) {
-            throw new IllegalArgumentException("confusionMatrix must be square");
-        }
-
-        int size = confusionMatrix.length;
-        for (int i = 0; i < size; i++) {
-            double sum = 0;
-            for (int j = 0; j < size; j++) {
-                sum += confusionMatrix[i][j];
-            }
-            precision += confusionMatrix[i][i] / sum;
-            for (int j = 0; j < size; j++) {
-                sum = confusionMatrix[j][i];
-            }
-            recall += confusionMatrix[i][i] / sum;
-        }
-        precision /= size;
-        recall /= size;
-        fDistance = computeFDistance(precision, recall);
+    public Statistics(double testPrecision, double testRecall, double trainingPrecision, double trainingRecall) {
+        this.testPrecision = testPrecision;
+        this.testRecall = testRecall;
+        testFDistance = computeFDistance(testPrecision, testRecall);
+        this.trainingPrecision = trainingPrecision;
+        this.trainingRecall = trainingRecall;
+        trainingFDistance = computeFDistance(trainingPrecision, trainingRecall);
+        hasTrainingStatistic = true;
     }
 
     private static double computeFDistance(double precision, double recall) {
         return 2 * precision * recall / (precision + recall);
     }
 
-    public double getFDistance() {
-        return fDistance;
+    public double getTestFDistance() {
+        return testFDistance;
     }
 
-    public double getPrecision() {
-        return precision;
+    public double getTestPrecision() {
+        return testPrecision;
     }
 
-    public double getRecall() {
-        return recall;
+    public double getTestRecall() {
+        return testRecall;
+    }
+
+    public double getTrainingFDistance() {
+        checkTrainingStatistics();
+        return trainingFDistance;
+    }
+
+    public double getTrainingPrecision() {
+        checkTrainingStatistics();
+        return trainingPrecision;
+    }
+
+    public double getTrainingRecall() {
+        checkTrainingStatistics();
+        return trainingRecall;
+    }
+
+    private void checkTrainingStatistics() {
+        if (!hasTrainingStatistic) {
+            throw new IllegalStateException("Statistics hasn't training statistics");
+        }
+    }
+
+    public static Statistics createStatistics(int[][] testConfusionMatrix) {
+        checkConfusionMatrix(testConfusionMatrix);
+        double[] answer = new double[2];
+        computePrecisionAndRecall(testConfusionMatrix, answer);
+        return new Statistics(answer[0], answer[1]);
+    }
+
+    public static Statistics createStatistics(int[][] testConfusionMatrix, int[][] trainingConfusionMatrix) {
+        checkConfusionMatrix(testConfusionMatrix);
+        checkConfusionMatrix(trainingConfusionMatrix);
+        double[] testAnswer = new double[2];
+        double[] trainingAnswer = new double[2];
+        computePrecisionAndRecall(testConfusionMatrix, testAnswer);
+        computePrecisionAndRecall(trainingConfusionMatrix, trainingAnswer);
+        return new Statistics(testAnswer[0], testAnswer[1], trainingAnswer[0], trainingAnswer[1]);
+    }
+
+    private static void checkConfusionMatrix(int[][] confusionMatrix) {
+        if (confusionMatrix == null) {
+            throw new IllegalArgumentException("confusionMatrix must be not null");
+        }
+        if (confusionMatrix.length != confusionMatrix[0].length) {
+            throw new IllegalArgumentException("confusionMatrix must be square");
+        }
+    }
+
+    /**
+     *
+     * @param confusionMatrix
+     * @param ans answer array. After method's execution {@code ans[0]} contains precision,
+     *        {@code ans[1]} contains recall.
+     */
+    private static void computePrecisionAndRecall(int[][] confusionMatrix, double[] ans) {
+        if (confusionMatrix == null) {
+            throw new IllegalArgumentException("confusionMatrix must be not null");
+        }
+        if (confusionMatrix.length != confusionMatrix[0].length) {
+            throw new IllegalArgumentException("confusionMatrix must be square");
+        }
+        if (ans == null || ans.length < 2) {
+            throw new IllegalArgumentException("answer array length must be >= 2");
+        }
+        int size = confusionMatrix.length;
+        ans[0] = 0;
+        ans[1] = 0;
+        for (int i = 0; i < size; i++) {
+            double sum = 0;
+            for (int j = 0; j < size; j++) {
+                sum += confusionMatrix[i][j];
+            }
+            ans[0] += confusionMatrix[i][i] / sum;
+            sum = 0;
+            for (int j = 0; j < size; j++) {
+                sum += confusionMatrix[j][i];
+            }
+            ans[1] += confusionMatrix[i][i] / sum;
+        }
+        ans[0] /= size;
+        ans[1] /= size;
     }
 }
