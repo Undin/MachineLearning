@@ -37,7 +37,8 @@ public class KNN<T extends ClassifiedData> implements Classifier<T> {
 
         double[] weights = new double[t.getClassNumber()];
         for (int i = 0; i < k; i++) {
-            weights[trainingSample.get(ids[i]).getClassId()] += weightFunction.weight(t, trainingSample.get(i));
+            T neighbor = trainingSample.get(ids[i]);
+            weights[neighbor.getClassId()] += weightFunction.weight(t, neighbor);
         }
 
         double maxWeight = 0;
