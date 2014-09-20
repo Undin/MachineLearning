@@ -109,19 +109,17 @@ public class Statistics {
             throw new IllegalArgumentException("answer array length must be >= 2");
         }
         int size = confusionMatrix.length;
-        ans[0] = 0;
-        ans[1] = 0;
         for (int i = 0; i < size; i++) {
             double sum = 0;
             for (int j = 0; j < size; j++) {
                 sum += confusionMatrix[i][j];
             }
-            ans[0] += confusionMatrix[i][i] / sum;
+            ans[0] = confusionMatrix[i][i] / sum;
             sum = 0;
             for (int j = 0; j < size; j++) {
                 sum += confusionMatrix[j][i];
             }
-            ans[1] += confusionMatrix[i][i] / sum;
+            ans[1] = confusionMatrix[i][i] / sum;
         }
         ans[0] /= size;
         ans[1] /= size;
