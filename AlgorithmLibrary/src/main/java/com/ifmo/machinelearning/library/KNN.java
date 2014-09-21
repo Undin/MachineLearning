@@ -4,7 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Realization of KNN algorithm
+ * <p>
  * Created by Whiplash on 19.09.2014.
+ *
+ * @see <a href="http://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm">KNN</a>
  */
 public class KNN<T extends ClassifiedData> implements Classifier<T> {
 
@@ -19,7 +23,7 @@ public class KNN<T extends ClassifiedData> implements Classifier<T> {
     /**
      * Function of weight for type {@code T}
      */
-    private Weight<T, Double> weightFunction;
+    private Weight weightFunction;
     /**
      * Number of nearest neighbor which uses to classifier element
      */
@@ -31,7 +35,7 @@ public class KNN<T extends ClassifiedData> implements Classifier<T> {
      * @param weightFunction   {@link #weightFunction}
      * @param k                {@link #k}
      */
-    public KNN(List<T> sample, Distance<T, Double> distanceFunction, Weight<T, Double> weightFunction, int k) {
+    public KNN(List<T> sample, Distance<T, Double> distanceFunction, Weight weightFunction, int k) {
         this.sample = sample;
         this.distanceFunction = distanceFunction;
         this.weightFunction = weightFunction;
@@ -54,7 +58,7 @@ public class KNN<T extends ClassifiedData> implements Classifier<T> {
         double[] weights = new double[t.getClassNumber()];
         for (int i = 0; i < k; i++) {
             T neighbor = sample.get(ids[i]);
-            weights[neighbor.getClassId()] += weightFunction.weight(t, neighbor);
+            weights[neighbor.getClassId()] += weightFunction.weight(distances[ids[i]]);
         }
 
         return indexOfMaxElement(weights);
