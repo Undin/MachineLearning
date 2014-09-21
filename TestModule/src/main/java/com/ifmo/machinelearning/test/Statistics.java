@@ -109,6 +109,8 @@ public class Statistics {
             throw new IllegalArgumentException("answer array length must be >= 2");
         }
         int size = confusionMatrix.length;
+        int precisionCount = 0;
+        int recallCount = 0;
         ans[0] = 0;
         ans[1] = 0;
         for (int i = 0; i < size; i++) {
@@ -116,14 +118,21 @@ public class Statistics {
             for (int j = 0; j < size; j++) {
                 sum += confusionMatrix[i][j];
             }
-            ans[0] += confusionMatrix[i][i] / sum;
+            if (sum != 0) {
+                ans[0] += confusionMatrix[i][i] / sum;
+                precisionCount++;
+            }
             sum = 0;
             for (int j = 0; j < size; j++) {
                 sum += confusionMatrix[j][i];
             }
-            ans[1] += confusionMatrix[i][i] / sum;
+            if (sum != 0) {
+                ans[1] += confusionMatrix[i][i] / sum;
+                recallCount++;
+            }
+
         }
-        ans[0] /= size;
-        ans[1] /= size;
+        ans[0] /= precisionCount;
+        ans[1] /= recallCount;
     }
 }
