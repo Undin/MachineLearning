@@ -2,14 +2,14 @@ package com.ifmo.machinelearning.library;
 
 /**
  * Interface class that has the following methods:
- * {@link #weight(Object)}
+ * {@link #weight(double)}
  * <p>
  * Created by Whiplash on 19.09.2014.
  */
 public interface Weight {
 
     /**
-     * Measures weight between {@code first} and {@code second}
+     * Measures weight
      *
      * @param distance distance between objects
      * @return calculated weight
