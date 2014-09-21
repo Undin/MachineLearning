@@ -16,6 +16,10 @@ public class KNNTestMachine extends TestMachine<Point> {
         super(dataSet);
     }
 
+    public KNNTestMachine(List<Point> dataSet, boolean parallelTest) {
+        super(dataSet, parallelTest);
+    }
+
     public void setK(int k) {
         this.k = k;
     }
