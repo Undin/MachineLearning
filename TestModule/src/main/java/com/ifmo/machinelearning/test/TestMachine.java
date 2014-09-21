@@ -90,7 +90,7 @@ public abstract class TestMachine<T extends ClassifiedData> {
         return getCurrentStatistic(false);
     }
 
-    protected void test(List<T> trainingData, List<T> testData, boolean testTrainingSample) {
+    public void test(List<T> trainingData, List<T> testData, boolean testTrainingSample) {
         Classifier<T> classifier = createClassifier(trainingData).training();
         if (parallelTest) {
             testInternal(classifier, testData, testConfusionMatrix);
@@ -132,7 +132,7 @@ public abstract class TestMachine<T extends ClassifiedData> {
         return Executors.newCachedThreadPool();
     }
 
-    protected void clearConfusionMatrix() {
+    public void clearConfusionMatrix() {
         for (int[] arr : testConfusionMatrix) {
             Arrays.fill(arr, 0);
         }
@@ -141,7 +141,7 @@ public abstract class TestMachine<T extends ClassifiedData> {
         }
     }
 
-    private Statistics getCurrentStatistic(boolean withTrainingStatistics) {
+    public Statistics getCurrentStatistic(boolean withTrainingStatistics) {
         if (withTrainingStatistics) {
             return Statistics.createStatistics(testConfusionMatrix, trainingConfusionMatrix);
         } else {
