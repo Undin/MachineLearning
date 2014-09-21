@@ -30,6 +30,10 @@ public abstract class TestMachine<T extends ClassifiedData> {
     }
 
     public Statistics crossValidationTest(int foldCount, int rounds) {
+        return crossValidationTest(foldCount, rounds, false);
+    }
+
+    public Statistics crossValidationTest(int foldCount, int rounds, boolean testTrainingSample) {
         clearConfusionMatrix();
         final int foldSize = size / foldCount;
         for (int k = 0; k < rounds; k++) {
@@ -43,22 +47,26 @@ public abstract class TestMachine<T extends ClassifiedData> {
                 testData = dataSet.subList(l, r);
                 trainingData.addAll(dataSet.subList(0, l));
                 trainingData.addAll(dataSet.subList(r, size));
-                test(trainingData, testData);
+                test(trainingData, testData, testTrainingSample);
             }
         }
-        return getCurrentStatistic();
+        return getCurrentStatistic(testTrainingSample);
     }
 
     public Statistics randomSubSamplingTest(int foldSize, int rounds) {
+        return randomSubSamplingTest(foldSize, rounds, false);
+    }
+
+    public Statistics randomSubSamplingTest(int foldSize, int rounds, boolean testTrainingSample) {
         clearConfusionMatrix();
         for (int i = 0; i < rounds; i++) {
             Collections.shuffle(dataSet);
             List<T> testData = dataSet.subList(0, foldSize);
             List<T> trainingData = dataSet.subList(foldSize, size);
-            test(trainingData, testData);
+            test(trainingData, testData, testTrainingSample);
         }
 
-        return getCurrentStatistic();
+        return getCurrentStatistic(testTrainingSample);
     }
 
     public Statistics leaveOneOut() {
@@ -69,15 +77,17 @@ public abstract class TestMachine<T extends ClassifiedData> {
             List<T> testData = Arrays.asList(dataSet.get(i));
             trainingData.addAll(dataSet.subList(0, i));
             trainingData.addAll(dataSet.subList(i + 1, size));
-            test(trainingData, testData);
+            test(trainingData, testData, false);
         }
-        return getCurrentStatistic();
+        return getCurrentStatistic(false);
     }
 
-    protected void test(List<T> trainingData, List<T> testData) {
+    protected void test(List<T> trainingData, List<T> testData, boolean testTrainingSample) {
         Classifier<T> classifier = createClassifier(trainingData).training();
-        testInternal(classifier, trainingData, trainingConfusionMatrix);
         testInternal(classifier, testData, testConfusionMatrix);
+        if (testTrainingSample) {
+            testInternal(classifier, trainingData, trainingConfusionMatrix);
+        }
     }
 
     protected void testInternal(Classifier<T> classifier, List<T> dataSet, int[][] confusionMatrix) {
@@ -96,8 +106,12 @@ public abstract class TestMachine<T extends ClassifiedData> {
         }
     }
 
-    private Statistics getCurrentStatistic() {
-        return Statistics.createStatistics(testConfusionMatrix, trainingConfusionMatrix);
+    private Statistics getCurrentStatistic(boolean withTrainingStatistics) {
+        if (withTrainingStatistics) {
+            return Statistics.createStatistics(testConfusionMatrix, trainingConfusionMatrix);
+        } else {
+            return Statistics.createStatistics(testConfusionMatrix);
+        }
     }
 
     private static void checkNotEmptyData(List<?> dataSet) {
