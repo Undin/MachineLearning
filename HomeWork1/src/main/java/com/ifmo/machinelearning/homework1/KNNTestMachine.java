@@ -1,6 +1,8 @@
 package com.ifmo.machinelearning.homework1;
 
-import com.ifmo.machinelearning.library.*;
+import com.ifmo.machinelearning.library.Classifier;
+import com.ifmo.machinelearning.library.DistanceWeight;
+import com.ifmo.machinelearning.library.KNN;
 import com.ifmo.machinelearning.test.TestMachine;
 
 import java.util.List;
@@ -33,8 +35,7 @@ public class KNNTestMachine extends TestMachine<Point> {
 
     @Override
     protected Classifier<Point> createClassifier(List<Point> dataSet) {
-        Distance<Point, Double> distance = EuclideanDistance.getInstance();
-        return new KNN<>(dataSet, distance, KernelWeight.getInstance(GaussKernel.getInstance()), k);
+        return new KNN<>(dataSet, EuclideanDistance.getInstance(), DistanceWeight.getInstance(), k);
     }
 
 }

@@ -67,8 +67,8 @@ public class Visualization extends Application {
         gc.setFill(Color.RED);
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(LINE_WIDTH);
-        for (double x = -1; x < 1; x += 0.01) {
-            for (double y = -1; y < 1; y += 0.01) {
+        for (double x = -1.5; x < 1.5; x += 0.01) {
+            for (double y = -1.5; y < 1.5; y += 0.01) {
                 if (classifier.getSupposedClassId(new Point(x, y)) == 1) {
                     gc.fillOval(x * 300 + WIDTH / 2, y * 300 + HEIGHT / 2, LINE_WIDTH + 1, LINE_WIDTH + 1);
                 } else {
