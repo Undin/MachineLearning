@@ -8,13 +8,31 @@ import java.util.List;
  */
 public class KNN<T extends ClassifiedData> implements Classifier<T> {
 
-    private List<T> trainingSample;
+    /**
+     * Data necessary to classifier element which serves {@link #getSupposedClassId(ClassifiedData)}
+     */
+    private List<T> sample;
+    /**
+     * Function of distance for type {@code T}
+     */
     private Distance<T, Double> distanceFunction;
+    /**
+     * Function of weight for type {@code T}
+     */
     private Weight<T, Double> weightFunction;
+    /**
+     * Number of nearest neighbor which uses to classifier element
+     */
     private int k;
 
+    /**
+     * @param sample           {@link #sample}
+     * @param distanceFunction {@link #distanceFunction}
+     * @param weightFunction   {@link #weightFunction}
+     * @param k                {@link #k}
+     */
     public KNN(List<T> sample, Distance<T, Double> distanceFunction, Weight<T, Double> weightFunction, int k) {
-        this.trainingSample = sample;
+        this.sample = sample;
         this.distanceFunction = distanceFunction;
         this.weightFunction = weightFunction;
         this.k = Math.min(k, sample.size());
@@ -27,27 +45,36 @@ public class KNN<T extends ClassifiedData> implements Classifier<T> {
 
     @Override
     public int getSupposedClassId(T t) {
-        Integer[] ids = new Integer[trainingSample.size()];
-        double[] distances = new double[trainingSample.size()];
+        Integer[] ids = new Integer[sample.size()];
+        double[] distances = new double[sample.size()];
         Arrays.setAll(ids, i -> i);
-        Arrays.setAll(distances, i -> distanceFunction.distance(t, trainingSample.get(i)));
+        Arrays.setAll(distances, i -> distanceFunction.distance(t, sample.get(i)));
         Arrays.sort(ids, (Integer o1, Integer o2) -> Double.compare(distances[o1], distances[o2]));
 
         double[] weights = new double[t.getClassNumber()];
         for (int i = 0; i < k; i++) {
-            T neighbor = trainingSample.get(ids[i]);
+            T neighbor = sample.get(ids[i]);
             weights[neighbor.getClassId()] += weightFunction.weight(t, neighbor);
         }
 
-        double maxWeight = 0;
+        return indexOfMaxElement(weights);
+    }
+
+    /**
+     * Returns index of max element in {@code array}
+     *
+     * @param array array to be searched
+     * @return index of max element in {@code array}
+     */
+    private int indexOfMaxElement(double[] array) {
+        double maxValue = 0;
         int maxId = -1;
-        for (int i = 0; i < weights.length; i++) {
-            if (maxWeight < weights[i]) {
-                maxWeight = weights[i];
+        for (int i = 0; i < array.length; i++) {
+            if (maxValue < array[i]) {
+                maxValue = array[i];
                 maxId = i;
             }
         }
-
         return maxId;
     }
 }

@@ -37,16 +37,13 @@ public class Main {
             int n = (sample.size() / FOLD_NUMBER) * (FOLD_NUMBER - 1);
             double[] xAxis = new double[n - 1];
             double[] yAxis = new double[n - 1];
-            double[] yTestAxis = new double[n - 1];
             for (int k = 1; k < n; k++) {
                 testMachine.setK(k);
                 Statistics statisticsCrossValidation = testMachine.crossValidationTest(FOLD_NUMBER, ROUNDS);
                 xAxis[k - 1] = k;
                 yAxis[k - 1] = statisticsCrossValidation.getTestFDistance();
-                yTestAxis[k - 1] = statisticsCrossValidation.getTrainingFDistance();
             }
             builder.addPlot("Cross validation", xAxis, yAxis);
-            builder.addPlot("Cross validation (training)", xAxis, yTestAxis);
         });
 
         threads[1] = new Thread(() -> {
@@ -54,34 +51,27 @@ public class Main {
             int n = sample.size() - 1;
             double[] xAxis = new double[n - 1];
             double[] yAxis = new double[n - 1];
-            double[] yTestAxis = new double[n - 1];
             for (int k = 1; k < n; k++) {
                 testMachine.setK(k);
                 Statistics statisticsCrossValidation = testMachine.leaveOneOut();
                 xAxis[k - 1] = k;
                 yAxis[k - 1] = statisticsCrossValidation.getTestFDistance();
-                yTestAxis[k - 1] = statisticsCrossValidation.getTrainingFDistance();
             }
             builder.addPlot("Leave one out", xAxis, yAxis);
-            builder.addPlot("Leave one out (training)", xAxis, yTestAxis);
         });
 
         threads[2] = new Thread(() -> {
-            //TODO check it ... couse I have no idea which parameters to apply this algorithm
             KNNTestMachine testMachine = new KNNTestMachine(sample);
             int n = (sample.size() / FOLD_NUMBER) * (FOLD_NUMBER - 1);
             double[] xAxis = new double[n - 1];
             double[] yAxis = new double[n - 1];
-            double[] yTestAxis = new double[n - 1];
             for (int k = 1; k < n; k++) {
                 testMachine.setK(k);
-                Statistics statisticsCrossValidation = testMachine.randomSubSamplingTest(FOLD_NUMBER, ROUNDS);
+                Statistics statisticsCrossValidation = testMachine.randomSubSamplingTest(FOLD_NUMBER, 500);
                 xAxis[k - 1] = k;
                 yAxis[k - 1] = statisticsCrossValidation.getTestFDistance();
-                yTestAxis[k - 1] = statisticsCrossValidation.getTrainingFDistance();
             }
             builder.addPlot("Random sub sampling", xAxis, yAxis);
-            builder.addPlot("Random sub sampling (training)", xAxis, yTestAxis);
         });
 
         for (Thread thread : threads) {

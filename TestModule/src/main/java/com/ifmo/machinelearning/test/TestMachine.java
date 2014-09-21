@@ -3,7 +3,10 @@ package com.ifmo.machinelearning.test;
 import com.ifmo.machinelearning.library.ClassifiedData;
 import com.ifmo.machinelearning.library.Classifier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by warrior on 19.09.14.
@@ -19,7 +22,7 @@ public abstract class TestMachine<T extends ClassifiedData> {
 
     public TestMachine(List<T> dataSet) {
         checkNotEmptyData(dataSet);
-        this.dataSet = dataSet;
+        this.dataSet = new ArrayList<>(dataSet);
         size = dataSet.size();
         classNumber = dataSet.get(0).getClassNumber();
         testConfusionMatrix = new int[classNumber][classNumber];
@@ -46,9 +49,9 @@ public abstract class TestMachine<T extends ClassifiedData> {
         return getCurrentStatistic();
     }
 
-    public Statistics randomSubSamplingTest(int foldSize, int round) {
+    public Statistics randomSubSamplingTest(int foldSize, int rounds) {
         clearConfusionMatrix();
-        for (int i = 0; i < round; i++) {
+        for (int i = 0; i < rounds; i++) {
             Collections.shuffle(dataSet);
             List<T> testData = dataSet.subList(0, foldSize);
             List<T> trainingData = dataSet.subList(foldSize, size);
