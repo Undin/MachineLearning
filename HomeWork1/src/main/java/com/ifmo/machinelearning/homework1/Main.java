@@ -30,8 +30,20 @@ public class Main {
         }
 
         Plot2DBuilder builder = new Plot2DBuilder("k", "F-measure");
-        Thread[] threads = new Thread[3];
 
+        KNNTestMachine testMachine = new KNNTestMachine(sample, true);
+        int n = (sample.size() / FOLD_NUMBER) * (FOLD_NUMBER - 1);
+        double[] xAxis = new double[n - 1];
+        double[] yAxis = new double[n - 1];
+        for (int k = 1; k < n; k++) {
+            testMachine.setK(k);
+            Statistics statisticsCrossValidation = testMachine.crossValidationTest(FOLD_NUMBER, ROUNDS);
+            xAxis[k - 1] = k;
+            yAxis[k - 1] = statisticsCrossValidation.getTestFDistance();
+        }
+        builder.addPlot("Cross validation", xAxis, yAxis);
+
+        /* Thread[] threads = new Thread[3];
         threads[0] = new Thread(() -> {
             KNNTestMachine testMachine = new KNNTestMachine(sample);
             int n = (sample.size() / FOLD_NUMBER) * (FOLD_NUMBER - 1);
@@ -62,12 +74,12 @@ public class Main {
 
         threads[2] = new Thread(() -> {
             KNNTestMachine testMachine = new KNNTestMachine(sample);
-            int n = (sample.size() / FOLD_NUMBER) * (FOLD_NUMBER - 1);
+            int n = sample.size() - sample.size() / FOLD_NUMBER;
             double[] xAxis = new double[n - 1];
             double[] yAxis = new double[n - 1];
             for (int k = 1; k < n; k++) {
                 testMachine.setK(k);
-                Statistics statisticsCrossValidation = testMachine.randomSubSamplingTest(FOLD_NUMBER, 500);
+                Statistics statisticsCrossValidation = testMachine.randomSubSamplingTest(sample.size() / FOLD_NUMBER, 500);
                 xAxis[k - 1] = k;
                 yAxis[k - 1] = statisticsCrossValidation.getTestFDistance();
             }
@@ -79,7 +91,7 @@ public class Main {
         }
         for (Thread thread : threads) {
             thread.join();
-        }
+        }*/
 
         builder.show();
     }

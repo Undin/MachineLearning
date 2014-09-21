@@ -4,6 +4,8 @@ import com.ifmo.machinelearning.library.*;
 import com.ifmo.machinelearning.test.TestMachine;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Whiplash on 19.09.2014.
@@ -22,6 +24,11 @@ public class KNNTestMachine extends TestMachine<Point> {
 
     public void setK(int k) {
         this.k = k;
+    }
+
+    @Override
+    protected ExecutorService generateExecutorService() {
+        return Executors.newFixedThreadPool(3);
     }
 
     @Override
