@@ -17,7 +17,7 @@ public class Main {
     private static final int FOLD_NUMBER = 5;
     private static final int ROUNDS = 20;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         List<Point> sample = new ArrayList<>();
         BufferedReader bf = new BufferedReader(new FileReader("chips.txt"));
         String line;
@@ -29,18 +29,68 @@ public class Main {
             sample.add(new Point(x, y, value));
         }
 
-        KNNTestMachine testMachine = new KNNTestMachine(sample);
-        int n = (sample.size() / FOLD_NUMBER) * (FOLD_NUMBER - 1);
-        double[] xAxis = new double[n - 1];
-        double[] yAxis = new double[n - 1];
-        for (int k = 1; k < n; k++) {
-            testMachine.setK(k);
-            Statistics statistics = testMachine.crossValidationTest(FOLD_NUMBER, ROUNDS);
-            xAxis[k - 1] = k;
-            yAxis[k - 1] = statistics.getTestFDistance();
+        Plot2DBuilder builder = new Plot2DBuilder("k", "F-measure");
+        Thread[] threads = new Thread[3];
+
+        threads[0] = new Thread(() -> {
+            KNNTestMachine testMachine = new KNNTestMachine(sample);
+            int n = (sample.size() / FOLD_NUMBER) * (FOLD_NUMBER - 1);
+            double[] xAxis = new double[n - 1];
+            double[] yAxis = new double[n - 1];
+            double[] yTestAxis = new double[n - 1];
+            for (int k = 1; k < n; k++) {
+                testMachine.setK(k);
+                Statistics statisticsCrossValidation = testMachine.crossValidationTest(FOLD_NUMBER, ROUNDS);
+                xAxis[k - 1] = k;
+                yAxis[k - 1] = statisticsCrossValidation.getTestFDistance();
+                yTestAxis[k - 1] = statisticsCrossValidation.getTrainingFDistance();
+            }
+            builder.addPlot("Cross validation", xAxis, yAxis);
+            builder.addPlot("Cross validation (training)", xAxis, yTestAxis);
+        });
+
+        threads[1] = new Thread(() -> {
+            KNNTestMachine testMachine = new KNNTestMachine(sample);
+            int n = sample.size() - 1;
+            double[] xAxis = new double[n - 1];
+            double[] yAxis = new double[n - 1];
+            double[] yTestAxis = new double[n - 1];
+            for (int k = 1; k < n; k++) {
+                testMachine.setK(k);
+                Statistics statisticsCrossValidation = testMachine.leaveOneOut();
+                xAxis[k - 1] = k;
+                yAxis[k - 1] = statisticsCrossValidation.getTestFDistance();
+                yTestAxis[k - 1] = statisticsCrossValidation.getTrainingFDistance();
+            }
+            builder.addPlot("Leave one out", xAxis, yAxis);
+            builder.addPlot("Leave one out (training)", xAxis, yTestAxis);
+        });
+
+        threads[2] = new Thread(() -> {
+            //TODO check it ... couse I have no idea which parameters to apply this algorithm
+            KNNTestMachine testMachine = new KNNTestMachine(sample);
+            int n = (sample.size() / FOLD_NUMBER) * (FOLD_NUMBER - 1);
+            double[] xAxis = new double[n - 1];
+            double[] yAxis = new double[n - 1];
+            double[] yTestAxis = new double[n - 1];
+            for (int k = 1; k < n; k++) {
+                testMachine.setK(k);
+                Statistics statisticsCrossValidation = testMachine.randomSubSamplingTest(FOLD_NUMBER, ROUNDS);
+                xAxis[k - 1] = k;
+                yAxis[k - 1] = statisticsCrossValidation.getTestFDistance();
+                yTestAxis[k - 1] = statisticsCrossValidation.getTrainingFDistance();
+            }
+            builder.addPlot("Random sub sampling", xAxis, yAxis);
+            builder.addPlot("Random sub sampling (training)", xAxis, yTestAxis);
+        });
+
+        for (Thread thread : threads) {
+            thread.start();
         }
-        Plot2DBuilder builder = new Plot2DBuilder("k", "F-Measure");
-        builder.addPlot("Test", xAxis, yAxis);
+        for (Thread thread : threads) {
+            thread.join();
+        }
+
         builder.show();
     }
 
