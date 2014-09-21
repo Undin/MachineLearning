@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * Created by warrior on 19.09.14.
@@ -15,14 +16,21 @@ public abstract class TestMachine<T extends ClassifiedData> {
 
     protected List<T> dataSet;
 
+    private boolean parallelTest;
+
     private int size;
     private int classNumber;
     private int[][] testConfusionMatrix;
     private int[][] trainingConfusionMatrix;
 
     public TestMachine(List<T> dataSet) {
+        this(dataSet, false);
+    }
+
+    public TestMachine(List<T> dataSet, boolean parallelTest) {
         checkNotEmptyData(dataSet);
         this.dataSet = new ArrayList<>(dataSet);
+        this.parallelTest = parallelTest;
         size = dataSet.size();
         classNumber = dataSet.get(0).getClassNumber();
         testConfusionMatrix = new int[classNumber][classNumber];
@@ -84,17 +92,44 @@ public abstract class TestMachine<T extends ClassifiedData> {
 
     protected void test(List<T> trainingData, List<T> testData, boolean testTrainingSample) {
         Classifier<T> classifier = createClassifier(trainingData).training();
-        testInternal(classifier, testData, testConfusionMatrix);
-        if (testTrainingSample) {
-            testInternal(classifier, trainingData, trainingConfusionMatrix);
+        if (parallelTest) {
+            testInternal(classifier, testData, testConfusionMatrix);
+            if (testTrainingSample) {
+                testInternal(classifier, trainingData, trainingConfusionMatrix);
+            }
+        } else {
+            parallelTestInternal(classifier, testData, testConfusionMatrix);
+            if (testTrainingSample) {
+                parallelTestInternal(classifier, trainingData, trainingConfusionMatrix);
+            }
         }
     }
 
     protected void testInternal(Classifier<T> classifier, List<T> dataSet, int[][] confusionMatrix) {
         for (T t : dataSet) {
-            int supposedClass = classifier.getSupposedClassId(t);
-            confusionMatrix[supposedClass][t.getClassId()]++;
+            confusionMatrix[classifier.getSupposedClassId(t)][t.getClassId()]++;
         }
+    }
+
+    protected void parallelTestInternal(Classifier<T> classifier, List<T> dataSet, int[][] confusionMatrix) {
+        ExecutorService executor = generateExecutorService();
+        List<Future<Integer>> futureList = new ArrayList<>(dataSet.size());
+        for (T t : dataSet) {
+            futureList.add(executor.submit(() -> classifier.getSupposedClassId(t)));
+        }
+        try {
+            executor.shutdown();
+            executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
+            for (int i = 0; i < dataSet.size(); i++) {
+                confusionMatrix[futureList.get(i).get()][dataSet.get(i).getClassId()]++;
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected ExecutorService generateExecutorService() {
+        return Executors.newCachedThreadPool();
     }
 
     protected void clearConfusionMatrix() {
@@ -120,5 +155,14 @@ public abstract class TestMachine<T extends ClassifiedData> {
         }
     }
 
+    public boolean isParallelTest() {
+        return parallelTest;
+    }
+
+    public void setParallelTest(boolean parallelTest) {
+        this.parallelTest = parallelTest;
+    }
+
     protected abstract Classifier<T> createClassifier(List<T> dataSet);
+
 }
