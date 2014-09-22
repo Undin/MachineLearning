@@ -45,7 +45,7 @@ public class Main {
                 testMachine.setK(k);
                 Statistics statistics = testMachine.crossValidationTest(FOLD_NUMBER, ROUNDS);
                 xAxis[k - 1] = k;
-                yAxis[k - 1] = statistics.getFDistance();
+                yAxis[k - 1] = statistics.getFMeasure();
             }
             builder.addPlot("Training", xAxis, yAxis);
         }
@@ -60,7 +60,7 @@ public class Main {
                 testMachine.test(second, first);
                 Statistics statistics = testMachine.getCurrentStatistic();
                 xAxis[k - 1] = k;
-                yAxis[k - 1] = statistics.getFDistance();
+                yAxis[k - 1] = statistics.getFMeasure();
             }
             builder.addPlot("Test", xAxis, yAxis);
         }
