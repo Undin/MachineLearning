@@ -5,65 +5,30 @@ package com.ifmo.machinelearning.test;
  */
 public class Statistics {
 
-    private double testFDistance;
-    private double testPrecision;
-    private double testRecall;
-    private double trainingFDistance;
-    private double trainingPrecision;
-    private double trainingRecall;
-    private boolean hasTrainingStatistic;
+    private double fDistance;
+    private double precision;
+    private double recall;
 
-    public Statistics(double testPrecision, double testRecall) {
-        this.testPrecision = testPrecision;
-        this.testRecall = testRecall;
-        testFDistance = computeFDistance(testPrecision, testRecall);
-    }
-
-    public Statistics(double testPrecision, double testRecall, double trainingPrecision, double trainingRecall) {
-        this.testPrecision = testPrecision;
-        this.testRecall = testRecall;
-        testFDistance = computeFDistance(testPrecision, testRecall);
-        this.trainingPrecision = trainingPrecision;
-        this.trainingRecall = trainingRecall;
-        trainingFDistance = computeFDistance(trainingPrecision, trainingRecall);
-        hasTrainingStatistic = true;
+    public Statistics(double precision, double recall) {
+        this.precision = precision;
+        this.recall = recall;
+        fDistance = computeFDistance(precision, recall);
     }
 
     private static double computeFDistance(double precision, double recall) {
         return 2 * precision * recall / (precision + recall);
     }
 
-    public double getTestFDistance() {
-        return testFDistance;
+    public double getFDistance() {
+        return fDistance;
     }
 
-    public double getTestPrecision() {
-        return testPrecision;
+    public double getPrecision() {
+        return precision;
     }
 
-    public double getTestRecall() {
-        return testRecall;
-    }
-
-    public double getTrainingFDistance() {
-        checkTrainingStatistics();
-        return trainingFDistance;
-    }
-
-    public double getTrainingPrecision() {
-        checkTrainingStatistics();
-        return trainingPrecision;
-    }
-
-    public double getTrainingRecall() {
-        checkTrainingStatistics();
-        return trainingRecall;
-    }
-
-    private void checkTrainingStatistics() {
-        if (!hasTrainingStatistic) {
-            throw new IllegalStateException("Statistics hasn't training statistics");
-        }
+    public double getRecall() {
+        return recall;
     }
 
     public static Statistics createStatistics(int[][] testConfusionMatrix) {
@@ -71,16 +36,6 @@ public class Statistics {
         double[] answer = new double[2];
         computePrecisionAndRecall(testConfusionMatrix, answer);
         return new Statistics(answer[0], answer[1]);
-    }
-
-    public static Statistics createStatistics(int[][] testConfusionMatrix, int[][] trainingConfusionMatrix) {
-        checkConfusionMatrix(testConfusionMatrix);
-        checkConfusionMatrix(trainingConfusionMatrix);
-        double[] testAnswer = new double[2];
-        double[] trainingAnswer = new double[2];
-        computePrecisionAndRecall(testConfusionMatrix, testAnswer);
-        computePrecisionAndRecall(trainingConfusionMatrix, trainingAnswer);
-        return new Statistics(testAnswer[0], testAnswer[1], trainingAnswer[0], trainingAnswer[1]);
     }
 
     private static void checkConfusionMatrix(int[][] confusionMatrix) {
