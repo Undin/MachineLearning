@@ -35,7 +35,7 @@ public class KNNTestMachine extends TestMachine<Point> {
 
     @Override
     protected Classifier<Point> createClassifier(List<Point> dataSet) {
-        return new KNN<>(dataSet, EuclideanDistance.getInstance(), DistanceWeight.getInstance(), k);
+        return new KNN<>(dataSet, ManhattanDistance.getInstance(), DistanceWeight.getInstance(), k);
     }
 
 }
