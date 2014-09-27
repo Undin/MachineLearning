@@ -55,10 +55,8 @@ public class Main {
             double[] xAxis = new double[n - 1];
             double[] yAxis = new double[n - 1];
             for (int k = 1; k < n; k++) {
-                testMachine.clearConfusionMatrix();
                 testMachine.setK(k);
-                testMachine.test(second, first);
-                Statistics statistics = testMachine.getCurrentStatistic();
+                Statistics statistics = testMachine.test(second, first);
                 xAxis[k - 1] = k;
                 yAxis[k - 1] = statistics.getFMeasure();
             }

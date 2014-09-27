@@ -80,7 +80,13 @@ public abstract class TestMachine<T extends ClassifiedData> {
         return getCurrentStatistic();
     }
 
-    public void test(List<T> trainingData, List<T> testData) {
+    public Statistics test(List<T> trainingData, List<T> testData) {
+        clearConfusionMatrix();
+        testInternal(trainingData, testData);
+        return getCurrentStatistic();
+    }
+
+    protected void testInternal(List<T> trainingData, List<T> testData) {
         Classifier<T> classifier = createClassifier(trainingData).training();
         if (parallelTest) {
             testInternal(classifier, testData, testConfusionMatrix);
