@@ -1,4 +1,6 @@
-package com.ifmo.machinelearning.library;
+package com.ifmo.machinelearning.library.knn;
+
+import com.ifmo.machinelearning.library.Kernel;
 
 /**
  * Weight function: {@code K(distance)}, where K - kernel function

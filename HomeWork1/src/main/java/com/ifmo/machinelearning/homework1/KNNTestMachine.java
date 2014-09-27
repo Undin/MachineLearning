@@ -1,8 +1,8 @@
 package com.ifmo.machinelearning.homework1;
 
 import com.ifmo.machinelearning.library.Classifier;
-import com.ifmo.machinelearning.library.DistanceWeight;
-import com.ifmo.machinelearning.library.KNN;
+import com.ifmo.machinelearning.library.knn.DistanceWeight;
+import com.ifmo.machinelearning.library.knn.KNN;
 import com.ifmo.machinelearning.test.TestMachine;
 
 import java.util.List;

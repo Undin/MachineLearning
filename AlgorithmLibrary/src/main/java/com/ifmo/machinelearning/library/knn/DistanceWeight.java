@@ -1,4 +1,4 @@
-package com.ifmo.machinelearning.library;
+package com.ifmo.machinelearning.library.knn;
 
 /**
  * Weight function: {@code 1/distance}

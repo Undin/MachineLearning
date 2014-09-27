@@ -1,4 +1,4 @@
-package com.ifmo.machinelearning.library;
+package com.ifmo.machinelearning.library.knn;
 
 /**
  * Interface class that has the following methods:
