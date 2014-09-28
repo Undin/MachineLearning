@@ -3,3 +3,5 @@ rootProject.name = 'MachineLearningFramework'
 include 'TestModule'
 include 'AlgorithmLibrary'
 include 'HomeWork1'
+include 'HomeWork2'
+
