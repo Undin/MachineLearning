@@ -5,16 +5,15 @@ import com.ifmo.machinelearning.library.ClassifiedData;
 /**
  * Created by warrior on 19.09.14.
  */
-public class Point implements ClassifiedData {
+public class Point extends ClassifiedData {
 
     private double x;
     private double y;
-    private int classId;
 
     public Point(double x, double y, int classId) {
         this.x = x;
         this.y = y;
-        this.classId = classId;
+        setClassId(classId);
     }
 
     public Point(double x, double y) {
@@ -27,11 +26,6 @@ public class Point implements ClassifiedData {
 
     public double getY() {
         return y;
-    }
-
-    @Override
-    public int getClassId() {
-        return classId;
     }
 
     @Override

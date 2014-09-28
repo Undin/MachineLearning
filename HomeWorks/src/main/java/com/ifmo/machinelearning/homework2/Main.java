@@ -36,7 +36,7 @@ public class Main {
                 getSamples(f);
             }
         } else {
-            sample.add(new Message(file));
+            sample.add(Message.createMessage(file));
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.ifmo.machinelearning.homework2;
 
 import com.ifmo.machinelearning.library.Classifier;
-import com.ifmo.machinelearning.library.bayes.Bayes;
 import com.ifmo.machinelearning.test.TestMachine;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class BayesTestMachine extends TestMachine<Message> {
 
     @Override
     protected Classifier<Message> createClassifier(List<Message> dataSet) {
-        return new Bayes<>(dataSet);
+        return null;//new Bayes<>(dataSet);
     }
 
 }
