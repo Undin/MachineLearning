@@ -5,7 +5,7 @@ repositories {
 }
 
 dependencies {
+    compile project(':AlgorithmLibrary')
     compile project(':TestModule')
     compile project(':Graphics')
-    testCompile group: 'junit', name: 'junit', version: '4.11'
 }
