@@ -10,38 +10,31 @@ import java.util.Map;
 /**
  * Created by Whiplash on 28.09.2014.
  */
-public class Bayes<T extends BayesElement> implements Classifier<T> {
+public class Bayes<T extends BayesElement> extends Classifier<T> {
 
-    private List<T> sample;
-    private int classNumber;
     List<Double> classProbabilities;
     Map<Object, List<Double>> elementProbabilities;
 
-    public Bayes(List<T> sample) {
-        this.sample = sample;
-        if (!sample.isEmpty()) {
-            classNumber = sample.get(0).getClassNumber();
-            classProbabilities = new ArrayList<>(classNumber);
-            elementProbabilities = new HashMap<>();
-        }
+    public Bayes(List<T> data) {
+        super(data);
+        classProbabilities = new ArrayList<>(getClassNumber());
+        elementProbabilities = new HashMap<>();
     }
 
     @Override
     public Classifier<T> training() {
         Map<Object, List<Integer>> entries = new HashMap<>();
         List<Integer> numberOfRepresentatives = new ArrayList<>();
-        if (!sample.isEmpty()) {
-            for (int i = 0; i < classNumber; i++) {
-                numberOfRepresentatives.add(0);
-            }
+        for (int i = 0; i < getClassNumber(); i++) {
+            numberOfRepresentatives.add(0);
         }
-        for (T t : sample) {
+        for (T t : getData()) {
             numberOfRepresentatives.set(t.getClassId(), numberOfRepresentatives.get(t.getClassId()) + 1);
             for (Object element : t) {
                 List<Integer> entriesList = entries.remove(t);
                 if (entriesList == null) {
-                    entriesList = new ArrayList<>(classNumber);
-                    for (int i = 0; i < classNumber; i++) {
+                    entriesList = new ArrayList<>(getClassNumber());
+                    for (int i = 0; i < getClassNumber(); i++) {
                         entriesList.add(0);
                     }
                 }
@@ -50,13 +43,13 @@ public class Bayes<T extends BayesElement> implements Classifier<T> {
             }
         }
 
-        for (int i = 0; i < classNumber; i++) {
+        for (int i = 0; i < getClassNumber(); i++) {
             classProbabilities.add(getProbability(numberOfRepresentatives, i));
         }
         for (Object element : entries.keySet()) {
-            List<Double> listOfProbabilities = new ArrayList<>(classNumber);
+            List<Double> listOfProbabilities = new ArrayList<>(getClassNumber());
             List<Integer> neededEntries = entries.get(element);
-            for (int i = 0; i < classNumber; i++) {
+            for (int i = 0; i < getClassNumber(); i++) {
                 listOfProbabilities.add(getProbability(neededEntries, i));
             }
             elementProbabilities.put(element, listOfProbabilities);
@@ -67,13 +60,13 @@ public class Bayes<T extends BayesElement> implements Classifier<T> {
 
     @Override
     public int getSupposedClassId(T t) {
-        List<Double> resultProbabilities = new ArrayList<>(classNumber);
-        for (int i = 0; i < classNumber; i++) {
+        List<Double> resultProbabilities = new ArrayList<>(getClassNumber());
+        for (int i = 0; i < getClassNumber(); i++) {
             resultProbabilities.add(classProbabilities.get(i));
         }
         for (Object element : t) {
             if (elementProbabilities.containsKey(element)) {
-                for (int i = 0; i < classNumber; i++) {
+                for (int i = 0; i < getClassNumber(); i++) {
                     resultProbabilities.set(i, resultProbabilities.get(i) * elementProbabilities.get(element).get(i));
                 }
             }

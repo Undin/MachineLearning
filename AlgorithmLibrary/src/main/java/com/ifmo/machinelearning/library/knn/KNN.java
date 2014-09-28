@@ -13,12 +13,8 @@ import java.util.List;
  *
  * @see <a href="http://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm">KNN</a>
  */
-public class KNN<T extends ClassifiedData> implements Classifier<T> {
+public class KNN<T extends ClassifiedData> extends Classifier<T> {
 
-    /**
-     * Data necessary to classifier element which serves {@link #getSupposedClassId(ClassifiedData)}
-     */
-    private List<T> sample;
     /**
      * Function of distance for type {@code T}
      */
@@ -33,16 +29,16 @@ public class KNN<T extends ClassifiedData> implements Classifier<T> {
     private int k;
 
     /**
-     * @param sample           {@link #sample}
+     * @param data
      * @param distanceFunction {@link #distanceFunction}
      * @param weightFunction   {@link #weightFunction}
      * @param k                {@link #k}
      */
-    public KNN(List<T> sample, Distance<T, Double> distanceFunction, Weight weightFunction, int k) {
-        this.sample = sample;
+    public KNN(List<T> data, Distance<T, Double> distanceFunction, Weight weightFunction, int k) {
+        super(data);
         this.distanceFunction = distanceFunction;
         this.weightFunction = weightFunction;
-        this.k = Math.min(k, sample.size());
+        this.k = Math.min(k, data.size());
     }
 
     @Override
@@ -52,15 +48,15 @@ public class KNN<T extends ClassifiedData> implements Classifier<T> {
 
     @Override
     public int getSupposedClassId(T t) {
-        Integer[] ids = new Integer[sample.size()];
-        double[] distances = new double[sample.size()];
+        Integer[] ids = new Integer[getData().size()];
+        double[] distances = new double[getData().size()];
         Arrays.setAll(ids, i -> i);
-        Arrays.setAll(distances, i -> distanceFunction.distance(t, sample.get(i)));
+        Arrays.setAll(distances, i -> distanceFunction.distance(t, getData().get(i)));
         Arrays.sort(ids, (Integer o1, Integer o2) -> Double.compare(distances[o1], distances[o2]));
 
-        double[] weights = new double[t.getClassNumber()];
+        double[] weights = new double[getClassNumber()];
         for (int i = 0; i < k; i++) {
-            T neighbor = sample.get(ids[i]);
+            T neighbor = getData().get(ids[i]);
             weights[neighbor.getClassId()] += weightFunction.weight(distances[ids[i]]);
         }
 
