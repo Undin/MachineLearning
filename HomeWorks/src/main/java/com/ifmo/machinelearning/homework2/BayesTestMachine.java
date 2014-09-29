@@ -27,7 +27,6 @@ public class BayesTestMachine extends TestMachine<Message> {
 
     @Override
     protected Classifier<Message> createClassifier(List<Message> dataSet) {
-        return null;//new Bayes<>(dataSet);
+        return new NaiveBayesClassifier(dataSet);
     }
-
 }
