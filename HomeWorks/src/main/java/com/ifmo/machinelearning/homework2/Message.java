@@ -28,6 +28,10 @@ public class Message extends ClassifiedData {
         return 2;
     }
 
+    public List<Integer> getWords() {
+        return words;
+    }
+
     public static Message createMessage(File file) throws IOException {
         ArrayList<Integer> words = new ArrayList<>();
         int classId = file.getName().contains(SPAM_MARK) ? 0 : 1;
