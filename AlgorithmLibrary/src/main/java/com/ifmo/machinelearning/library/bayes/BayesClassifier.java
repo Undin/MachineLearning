@@ -34,7 +34,7 @@ public abstract class BayesClassifier<T extends ClassifiedData> extends Classifi
     @Override
     public int getSupposedClassId(T t) {
         int supposedClassId = 0;
-        double maxValue = Double.MIN_VALUE;
+        double maxValue = -Double.MAX_VALUE;
         for (int i = 0; i < getClassNumber(); i++) {
             double value = lnPrioriProbability[i] + credibilityFunctionLn(t, i);
             if (value > maxValue) {
