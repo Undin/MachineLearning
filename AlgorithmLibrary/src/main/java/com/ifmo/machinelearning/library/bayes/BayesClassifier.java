@@ -10,7 +10,7 @@ import java.util.List;
  */
 public abstract class BayesClassifier<T extends ClassifiedData> extends Classifier<T> {
 
-    private double prioriProbability[];
+    private double lnPrioriProbability[];
 
     public BayesClassifier(List<T> data) {
         super(data);
@@ -24,10 +24,10 @@ public abstract class BayesClassifier<T extends ClassifiedData> extends Classifi
     }
 
     protected void calculatePrioriProbability() {
-        prioriProbability = new double[getClassNumber()];
-        getData().forEach(t -> prioriProbability[t.getClassId()] += 1);
+        lnPrioriProbability = new double[getClassNumber()];
+        getData().forEach(t -> lnPrioriProbability[t.getClassId()] += 1);
         for (int i = 0; i < getClassNumber(); i++) {
-            prioriProbability[i] /= getClassNumber();
+            lnPrioriProbability[i] = StrictMath.log(lnPrioriProbability[i]) - StrictMath.log(getData().size());
         }
     }
 
@@ -36,7 +36,7 @@ public abstract class BayesClassifier<T extends ClassifiedData> extends Classifi
         int supposedClassId = 0;
         double maxValue = Double.MIN_VALUE;
         for (int i = 0; i < getClassNumber(); i++) {
-            double value = prioriProbability[i] * credibilityFunction(t, i);
+            double value = lnPrioriProbability[i] + credibilityFunctionLn(t, i);
             if (value > maxValue) {
                 supposedClassId = i;
                 maxValue = value;
@@ -45,7 +45,7 @@ public abstract class BayesClassifier<T extends ClassifiedData> extends Classifi
         return supposedClassId;
     }
 
-    protected abstract double calculateCredibilityFunction();
+    protected abstract void calculateCredibilityFunction();
 
-    protected abstract double credibilityFunction(T t, int classId);
+    protected abstract double credibilityFunctionLn(T t, int classId);
 }
