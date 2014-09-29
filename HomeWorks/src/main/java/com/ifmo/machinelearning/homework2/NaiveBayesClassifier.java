@@ -5,14 +5,15 @@ import com.ifmo.machinelearning.library.bayes.BayesClassifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by warrior on 29.09.14.
  */
 public class NaiveBayesClassifier extends BayesClassifier<Message> {
 
-    private HashMap<Integer, Double> spamWordsProbabilities = new HashMap<>();
-    private HashMap<Integer, Double> legitWordsProbabilities = new HashMap<>();
+    private Map<Integer, Double> spamWordsProbabilities = new HashMap<>();
+    private Map<Integer, Double> legitWordsProbabilities = new HashMap<>();
 
     public NaiveBayesClassifier(List<Message> data) {
         super(data);
@@ -29,39 +30,38 @@ public class NaiveBayesClassifier extends BayesClassifier<Message> {
                 legitMessages.add(message);
             }
         }
-        countProbabilities(spamWordsProbabilities, spamMessages);
-        countProbabilities(legitWordsProbabilities, legitMessages);
+        Map<Integer, Double> count = new HashMap<>();
+        calculateCount(count, getData());
+        calculateCount(spamWordsProbabilities, spamMessages);
+        calculateCount(legitWordsProbabilities, legitMessages);
+
+        calculateProbabilityLn(count, spamWordsProbabilities);
+        calculateProbabilityLn(count, legitWordsProbabilities);
     }
 
-    private void countProbabilities(HashMap<Integer, Double> probabilities, List<Message> messages) {
-        int sum = 0;
+    private void calculateCount(Map<Integer, Double> probabilities, List<Message> messages) {
         for (Message message : messages) {
-            sum += message.getWords().size();
             for (Integer i : message.getWords()) {
-                Double value;
-                if ((value = probabilities.get(i)) != null) {
-                    probabilities.put(i, value + 1);
-                } else {
-                    probabilities.put(i, 1D);
-                }
+                Double value = probabilities.getOrDefault(i, 0D);
+                probabilities.put(i, value + 1);
             }
         }
-        double lnSum = StrictMath.log(sum);
-        for (Integer i : probabilities.keySet()) {
-            Double value = probabilities.get(i);
-            probabilities.put(i, StrictMath.log(value) - lnSum);
+    }
+
+    private void calculateProbabilityLn(Map<Integer, Double> all, Map<Integer, Double> part) {
+        for (Integer i : part.keySet()) {
+            Double allCountLn = StrictMath.log(all.get(i));
+            Double partCountLn = StrictMath.log(part.get(i));
+            part.put(i, partCountLn - allCountLn);
         }
     }
 
     @Override
     protected double credibilityFunctionLn(Message message, int classId) {
-        HashMap<Integer, Double> probabilities = classId == 0 ? spamWordsProbabilities : legitWordsProbabilities;
+        Map<Integer, Double> probabilities = classId == 0 ? spamWordsProbabilities : legitWordsProbabilities;
         double probabilityLn = 0;
         for (Integer i : message.getWords()) {
-            Double value = probabilities.get(i);
-            if (value != null) {
-                probabilityLn += value;
-            }
+            probabilityLn += probabilities.getOrDefault(i, 0D);
         }
         return probabilityLn;
     }
