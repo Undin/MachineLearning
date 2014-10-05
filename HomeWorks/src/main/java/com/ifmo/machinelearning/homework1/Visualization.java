@@ -28,9 +28,6 @@ public class Visualization extends Application {
     private static final int WIDTH = 800;
     private static final int HEIGHT = 800;
 
-    private static final int FOLD_NUMBER = 5;
-    private static final int ROUNDS = 20;
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle(TITLE);
@@ -43,7 +40,7 @@ public class Visualization extends Application {
         primaryStage.show();
 
         List<Point> sample = new ArrayList<>();
-        BufferedReader bf = new BufferedReader(new FileReader("chips.txt"));
+        BufferedReader bf = new BufferedReader(new FileReader("./HomeWorks/res/homework1/chips.txt"));
         String line;
         while ((line = bf.readLine()) != null) {
             StringTokenizer st = new StringTokenizer(line, ",");

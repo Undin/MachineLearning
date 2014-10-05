@@ -21,7 +21,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         List<Point> sample = new ArrayList<>();
-        BufferedReader bf = new BufferedReader(new FileReader("chips.txt"));
+        BufferedReader bf = new BufferedReader(new FileReader("./HomeWorks/res/homework1/chips.txt"));
         String line;
         while ((line = bf.readLine()) != null) {
             StringTokenizer st = new StringTokenizer(line, ",");

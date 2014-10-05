@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class Main {
 
-    private static final File messageDirectory = new File("./Bayes/pu1");
+    private static final File messageDirectory = new File("./HomeWorks/res/homework2/");
 
     private static final int FOLD_NUMBER = 5;
     private static final int ROUNDS = 100;
