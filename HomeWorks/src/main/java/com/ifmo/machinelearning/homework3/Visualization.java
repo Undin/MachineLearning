@@ -49,6 +49,7 @@ public class Visualization extends Application {
             sample.add(new Point(x, y, value));
         }
         drawValues(canvas.getGraphicsContext2D(), sample);
+        drawLine(canvas.getGraphicsContext2D(), 1, 0);
     }
 
     private void drawAxis(GraphicsContext gc) {
@@ -73,8 +74,8 @@ public class Visualization extends Application {
 
     private void drawLine(GraphicsContext gc, double k, double b) {
         gc.setStroke(Color.BLACK);
-        gc.setLineWidth(LINE_WIDTH);
-//        gc.strokeLine(0, WIDTH / 2, HEIGHT, WIDTH / 2);
+        gc.setLineWidth(2);
+        gc.strokeLine(0, -((double) -(WIDTH / 2)/ SCALE * k + b) * SCALE + HEIGHT / 2, WIDTH, -((double) (WIDTH / 2) / SCALE * k + b) * SCALE + HEIGHT / 2);
     }
 
     public static void main(String[] args) {
