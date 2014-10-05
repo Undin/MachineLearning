@@ -7,10 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.StrictMath.log;
+
 /**
  * Created by warrior on 29.09.14.
  */
 public class NaiveBayesClassifier extends BayesClassifier<Message> {
+
+    private static final double ALPHA = 1;
 
     private Map<Integer, Double> spamWordsProbabilities = new HashMap<>();
     private Map<Integer, Double> legitWordsProbabilities = new HashMap<>();
@@ -49,9 +53,9 @@ public class NaiveBayesClassifier extends BayesClassifier<Message> {
     }
 
     private void calculateProbabilityLn(Map<Integer, Double> all, Map<Integer, Double> part) {
-        for (Integer i : part.keySet()) {
-            Double allCountLn = StrictMath.log(all.get(i));
-            Double partCountLn = StrictMath.log(part.get(i));
+        for (Integer i : all.keySet()) {
+            Double allCountLn = log(all.get(i) + ALPHA);
+            Double partCountLn = log(part.getOrDefault(i, 0D) + ALPHA * 2);
             part.put(i, partCountLn - allCountLn);
         }
     }

@@ -5,6 +5,8 @@ import com.ifmo.machinelearning.library.Classifier;
 
 import java.util.List;
 
+import static java.lang.StrictMath.log;
+
 /**
  * Created by warrior on 29.09.14.
  */
@@ -27,7 +29,7 @@ public abstract class BayesClassifier<T extends ClassifiedData> extends Classifi
         lnPrioriProbability = new double[getClassNumber()];
         getData().forEach(t -> lnPrioriProbability[t.getClassId()] += 1);
         for (int i = 0; i < getClassNumber(); i++) {
-            lnPrioriProbability[i] = StrictMath.log(lnPrioriProbability[i]) - StrictMath.log(getData().size());
+            lnPrioriProbability[i] = log(lnPrioriProbability[i]) - log(getData().size());
         }
     }
 
