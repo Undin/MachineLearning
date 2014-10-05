@@ -1,11 +1,12 @@
 package com.ifmo.machinelearning.homework2;
 
-import com.ifmo.machinelearning.graphics.Plot2DBuilder;
 import com.ifmo.machinelearning.test.Statistics;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by Whiplash on 28.09.2014.
