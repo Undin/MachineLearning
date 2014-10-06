@@ -57,7 +57,7 @@ public class Main {
             double[] yAxis = new double[n - 1];
             for (int k = 1; k < n; k++) {
                 testMachine.setK(k);
-                Statistics statistics = testMachine.test(second, first);
+                Statistics statistics = testMachine.test(first);
                 xAxis[k - 1] = k;
                 yAxis[k - 1] = statistics.getFMeasure();
             }
