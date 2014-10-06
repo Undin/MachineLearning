@@ -49,7 +49,7 @@ public abstract class TestMachine<T extends ClassifiedData> {
                 testData = dataSet.subList(l, r);
                 trainingData.addAll(dataSet.subList(0, l));
                 trainingData.addAll(dataSet.subList(r, size));
-                test(trainingData, testData);
+                testInternal(trainingData, testData);
             }
         }
         return getCurrentStatistic();
@@ -61,7 +61,7 @@ public abstract class TestMachine<T extends ClassifiedData> {
             Collections.shuffle(dataSet);
             List<T> testData = dataSet.subList(0, foldSize);
             List<T> trainingData = dataSet.subList(foldSize, size);
-            test(trainingData, testData);
+            testInternal(trainingData, testData);
         }
 
         return getCurrentStatistic();
@@ -75,24 +75,24 @@ public abstract class TestMachine<T extends ClassifiedData> {
             List<T> testData = Arrays.asList(dataSet.get(i));
             trainingData.addAll(dataSet.subList(0, i));
             trainingData.addAll(dataSet.subList(i + 1, size));
-            test(trainingData, testData);
+            testInternal(trainingData, testData);
         }
         return getCurrentStatistic();
     }
 
-    public Statistics test(List<T> trainingData, List<T> testData) {
-        clearConfusionMatrix();
-        testInternal(trainingData, testData);
-        return getCurrentStatistic();
+    public Statistics test(List<T> testData) {
+        return testInternal(dataSet, testData);
     }
 
-    protected void testInternal(List<T> trainingData, List<T> testData) {
+    protected Statistics testInternal(List<T> trainingData, List<T> testData) {
+        clearConfusionMatrix();
         Classifier<T> classifier = createClassifier(trainingData).training();
         if (parallelTest) {
             testInternal(classifier, testData, testConfusionMatrix);
         } else {
             parallelTestInternal(classifier, testData, testConfusionMatrix);
         }
+        return getCurrentStatistic();
     }
 
     protected void testInternal(Classifier<T> classifier, List<T> dataSet, int[][] confusionMatrix) {
