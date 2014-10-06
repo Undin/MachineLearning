@@ -15,18 +15,20 @@ public class Main {
 
     private static final File messageDirectory = new File("./HomeWorks/res/homework2/");
 
-    private static final int FOLD_NUMBER = 5;
-    private static final int ROUNDS = 100;
-
     private static List<Message> sample;
 
     public static void main(String[] args) throws IOException {
         sample = new ArrayList<>();
         getSamples(messageDirectory);
+
         Collections.shuffle(sample);
-        BayesTestMachine testMachine = new BayesTestMachine(sample, false);
-        Statistics statistics = testMachine.crossValidationTest(FOLD_NUMBER, ROUNDS);
+        List<Message> first = new ArrayList<>(sample.subList(0, sample.size() / 5));
+        List<Message> second = new ArrayList<>(sample.subList(sample.size() / 5, sample.size()));
+
+        BayesTestMachine testMachine = new BayesTestMachine(second, false);
+        Statistics statistics = testMachine.test(first);
         System.out.println(statistics.getFMeasure());
+
     }
 
     private static void getSamples(File file) throws IOException {
