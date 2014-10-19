@@ -17,7 +17,7 @@ import java.util.StringTokenizer;
 public class Main {
 
     private static final int FOLD_NUMBER = 5;
-    private static final int ROUNDS = 20;
+    private static final int ROUNDS = 50;
 
     public static void main(String[] args) throws IOException {
         List<Point> sample = new ArrayList<>();
@@ -35,11 +35,11 @@ public class Main {
         List<Point> first = new ArrayList<>(sample.subList(0, sample.size() / 5));
         List<Point> second = new ArrayList<>(sample.subList(sample.size() / 5, sample.size()));
 
-        SVMTestMachine testMachine = new SVMTestMachine(second, true);
-        testMachine.setKernel(FullPolyKernel.getInstance(3));
+        SVMTestMachine testMachine = new SVMTestMachine(sample, true);
+        testMachine.setKernel(PolyKernel.getInstance(1));
         double neededC = 0;
         double maxFMeasure = 0;
-        for (int cPow = -5; cPow <= 15; cPow += 2) {
+        for (int cPow = -5; cPow <= 11; cPow += 2) {
             double c = StrictMath.pow(2, cPow);
             testMachine.setC(c);
             Statistics statistics = testMachine.crossValidationTest(FOLD_NUMBER, ROUNDS);

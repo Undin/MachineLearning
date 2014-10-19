@@ -12,7 +12,7 @@ import java.util.Random;
  */
 public class SVMClassifier<T extends ClassifiedData> extends Classifier<T> {
 
-    private static final int MAX_PASSES = 5;
+    private static final int MAX_PASSES = 1;
     private static final double EPS = 10e-5;
 
     private final Random random = new Random();
@@ -90,7 +90,7 @@ public class SVMClassifier<T extends ClassifiedData> extends Classifier<T> {
                     if (Math.abs(alphas[j] - oldAlphaJ) < EPS) {
                         continue;
                     }
-                    alphas[i] += modifiedClassIds[i] * modifiedClassIds[j] * (alphas[j] - oldAlphaJ);
+                    alphas[i] += modifiedClassIds[i] * modifiedClassIds[j] * (oldAlphaJ - alphas[j]);
                     double b1 = b - ei - modifiedClassIds[i] * (alphas[i] - oldAlphaI) * kernelFunction.eval(xi, xi) -
                                          modifiedClassIds[j] * (alphas[j] - oldAlphaJ) * kernelFunction.eval(xi, xj);
                     double b2 = b - ej - modifiedClassIds[i] * (alphas[i] - oldAlphaI) * kernelFunction.eval(xi, xj) -
