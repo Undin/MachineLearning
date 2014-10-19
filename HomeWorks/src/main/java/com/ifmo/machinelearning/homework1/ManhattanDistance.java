@@ -1,5 +1,6 @@
 package com.ifmo.machinelearning.homework1;
 
+import com.ifmo.machinelearning.Point;
 import com.ifmo.machinelearning.library.knn.Distance;
 
 import static java.lang.StrictMath.abs;

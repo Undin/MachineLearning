@@ -1,5 +1,6 @@
 package com.ifmo.machinelearning.homework1;
 
+import com.ifmo.machinelearning.Point;
 import com.ifmo.machinelearning.graphics.Plot2DBuilder;
 import com.ifmo.machinelearning.test.Statistics;
 

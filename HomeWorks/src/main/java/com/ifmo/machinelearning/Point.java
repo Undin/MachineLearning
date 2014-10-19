@@ -1,4 +1,4 @@
-package com.ifmo.machinelearning.homework1;
+package com.ifmo.machinelearning;
 
 import com.ifmo.machinelearning.library.ClassifiedData;
 

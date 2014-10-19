@@ -1,5 +1,6 @@
 package com.ifmo.machinelearning.homework3;
 
+import com.ifmo.machinelearning.Point;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -75,7 +76,7 @@ public class Visualization extends Application {
     private void drawLine(GraphicsContext gc, double k, double b) {
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
-        gc.strokeLine(0, -((double) -(WIDTH / 2)/ SCALE * k + b) * SCALE + HEIGHT / 2, WIDTH, -((double) (WIDTH / 2) / SCALE * k + b) * SCALE + HEIGHT / 2);
+        gc.strokeLine(0, -((double) -(WIDTH / 2) / SCALE * k + b) * SCALE + HEIGHT / 2, WIDTH, -((double) (WIDTH / 2) / SCALE * k + b) * SCALE + HEIGHT / 2);
     }
 
     public static void main(String[] args) {

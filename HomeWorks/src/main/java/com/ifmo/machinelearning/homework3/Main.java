@@ -1,5 +1,7 @@
 package com.ifmo.machinelearning.homework3;
 
+import com.ifmo.machinelearning.Point;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

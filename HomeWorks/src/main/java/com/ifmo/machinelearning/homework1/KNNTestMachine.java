@@ -1,5 +1,6 @@
 package com.ifmo.machinelearning.homework1;
 
+import com.ifmo.machinelearning.Point;
 import com.ifmo.machinelearning.library.Classifier;
 import com.ifmo.machinelearning.library.knn.DistanceWeight;
 import com.ifmo.machinelearning.library.knn.KNN;
