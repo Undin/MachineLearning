@@ -16,8 +16,8 @@ public class SVMClassifier<T extends ClassifiedData> extends Classifier<T> {
     private static final double EPS = 10e-5;
 
     private final Random random = new Random();
-    private int[] modifiedClassIds;
 
+    protected int[] modifiedClassIds;
     protected final Kernel2<T> kernelFunction;
     protected final double c;
     protected double[] alphas;
