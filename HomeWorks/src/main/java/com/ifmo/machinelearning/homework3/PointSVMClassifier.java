@@ -22,8 +22,8 @@ public class PointSVMClassifier extends SVMClassifier<Point> {
     public Classifier<Point> training() {
         super.training();
         for (int i = 0; i < getData().size(); i++) {
-            w[0] = alphas[i] * modifiedClassIds[i] * getData().get(i).getX();
-            w[1] = alphas[i] * modifiedClassIds[i] * getData().get(i).getY();
+            w[0] += alphas[i] * modifiedClassIds[i] * getData().get(i).getX();
+            w[1] += alphas[i] * modifiedClassIds[i] * getData().get(i).getY();
         }
         return this;
     }
