@@ -1,10 +1,8 @@
 package com.ifmo.machinelearning.homework3;
 
-import com.ifmo.machinelearning.ManhattanDistance;
 import com.ifmo.machinelearning.Point;
 import com.ifmo.machinelearning.library.Classifier;
-import com.ifmo.machinelearning.library.knn.DistanceWeight;
-import com.ifmo.machinelearning.library.knn.KNN;
+import com.ifmo.machinelearning.library.svm.SVMClassifier;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -40,24 +38,26 @@ public class VisualizationExtra extends Application {
         Canvas canvas = new Canvas(WIDTH, HEIGHT);
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
-        primaryStage.show();
 
         List<Point> sample = new ArrayList<>();
         BufferedReader bf = new BufferedReader(new FileReader("./HomeWorks/res/homework1/chips.txt"));
         String line;
         while ((line = bf.readLine()) != null) {
-            StringTokenizer st = new StringTokenizer(line, ",");
+            StringTokenizer st = new StringTokenizer(line, ", ");
             double x = Double.parseDouble(st.nextToken());
             double y = Double.parseDouble(st.nextToken());
             int value = Integer.parseInt(st.nextToken());
             sample.add(new Point(x, y, value));
         }
-        drawValues(canvas.getGraphicsContext2D(), new KNN<>(sample, ManhattanDistance.getInstance(), DistanceWeight.getInstance(), 6));
+        Classifier<Point> classifier = new SVMClassifier<>(sample, new RBFKernel(0.5), 8);
+        drawValues(canvas.getGraphicsContext2D(), classifier.training());
+        drawValues(canvas.getGraphicsContext2D(), sample);
+        primaryStage.show();
     }
 
     private void drawValues(GraphicsContext gc, Classifier<Point> classifier) {
-        gc.setFill(Color.RED);
-        gc.setStroke(Color.BLUE);
+        gc.setFill(Color.BURLYWOOD);
+        gc.setStroke(Color.WHITE);
         gc.setLineWidth(LINE_WIDTH);
         for (double x = -1.5; x < 1.5; x += 0.01) {
             for (double y = -1.5; y < 1.5; y += 0.01) {
@@ -66,6 +66,19 @@ public class VisualizationExtra extends Application {
                 } else {
                     gc.strokeOval(x * SCALE + WIDTH / 2, -y * SCALE + HEIGHT / 2, 1, 1);
                 }
+            }
+        }
+    }
+
+    private void drawValues(GraphicsContext gc, List<Point> sample) {
+        gc.setFill(Color.RED);
+        gc.setStroke(Color.BLUE);
+        gc.setLineWidth(LINE_WIDTH);
+        for (Point point : sample) {
+            if (point.getClassId() == 1) {
+                gc.fillOval(point.getX() * SCALE + WIDTH / 2, -point.getY() * SCALE + HEIGHT / 2, LINE_WIDTH + 1, LINE_WIDTH + 1);
+            } else {
+                gc.strokeOval(point.getX() * SCALE + WIDTH / 2, -point.getY() * SCALE + HEIGHT / 2, 1, 1);
             }
         }
     }

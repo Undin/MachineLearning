@@ -1,6 +1,7 @@
 package com.ifmo.machinelearning.homework3;
 
 import com.ifmo.machinelearning.Point;
+import com.ifmo.machinelearning.test.Statistics;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -37,20 +38,31 @@ public class Visualization extends Application {
         drawAxis(canvas.getGraphicsContext2D());
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
-        primaryStage.show();
 
         List<Point> sample = new ArrayList<>();
         BufferedReader bf = new BufferedReader(new FileReader("./HomeWorks/res/homework3/LinearDataset"));
         String line;
         while ((line = bf.readLine()) != null) {
-            StringTokenizer st = new StringTokenizer(line, " ");
+            StringTokenizer st = new StringTokenizer(line, ", ");
             double x = Double.parseDouble(st.nextToken());
             double y = Double.parseDouble(st.nextToken());
             int value = Integer.parseInt(st.nextToken());
             sample.add(new Point(x, y, value));
         }
+
+        SVMTestMachine testMachine = new SVMTestMachine(sample);
+        testMachine.setKernel(InnerProductKernel.getInstance());
+        testMachine.setC(2);
+        Statistics statistics = testMachine.test(sample);
+        System.out.println(statistics.getFMeasure());
+
+        PointSVMClassifier classifier = new PointSVMClassifier(sample, InnerProductKernel.getInstance(), 2);
+        classifier.training();
+        System.out.println(String.format("y = %f * x + %f", classifier.getK(), classifier.getB()));
+
+        drawLine(canvas.getGraphicsContext2D(), classifier.getK(), classifier.getB());
         drawValues(canvas.getGraphicsContext2D(), sample);
-        drawLine(canvas.getGraphicsContext2D(), 1, 0);
+        primaryStage.show();
     }
 
     private void drawAxis(GraphicsContext gc) {

@@ -14,17 +14,17 @@ import java.util.StringTokenizer;
 /**
  * Created by Whiplash on 05.10.2014.
  */
-public class Main {
+public class MainExtra {
 
     private static final int FOLD_NUMBER = 5;
     private static final int ROUNDS = 50;
 
     public static void main(String[] args) throws IOException {
         List<Point> sample = new ArrayList<>();
-        BufferedReader bf = new BufferedReader(new FileReader("./HomeWorks/res/homework3/LinearDataset"));
+        BufferedReader bf = new BufferedReader(new FileReader("./HomeWorks/res/homework1/chips.txt"));
         String line;
         while ((line = bf.readLine()) != null) {
-            StringTokenizer st = new StringTokenizer(line, " ");
+            StringTokenizer st = new StringTokenizer(line, ", ");
             double x = Double.parseDouble(st.nextToken());
             double y = Double.parseDouble(st.nextToken());
             int value = Integer.parseInt(st.nextToken());
@@ -36,21 +36,27 @@ public class Main {
         List<Point> second = new ArrayList<>(sample.subList(sample.size() / 5, sample.size()));
 
         SVMTestMachine testMachine = new SVMTestMachine(second, true);
-        testMachine.setKernel(InnerProductKernel.getInstance());
         double neededC = 0;
+        double neededGamma = 0;
         double maxFMeasure = 0;
-        for (int cPow = -5; cPow <= 11; cPow += 2) {
-            double c = StrictMath.pow(2, cPow);
-            testMachine.setC(c);
-            Statistics statistics = testMachine.crossValidationTest(FOLD_NUMBER, ROUNDS);
-            double fMeasure = statistics.getFMeasure();
-            if (maxFMeasure < fMeasure) {
-                maxFMeasure = fMeasure;
-                neededC = c;
+        for (int cPow = 1; cPow <= 7; cPow += 2) {
+            for (int gammaPow = -1; gammaPow <= 3; gammaPow += 2) {
+                double c = StrictMath.pow(2, cPow);
+                double gamma = StrictMath.pow(2, gammaPow);
+                testMachine.setKernel(new RBFKernel(gamma));
+                testMachine.setC(c);
+                Statistics statistics = testMachine.crossValidationTest(FOLD_NUMBER, ROUNDS);
+                double fMeasure = statistics.getFMeasure();
+                if (maxFMeasure < fMeasure) {
+                    maxFMeasure = fMeasure;
+                    neededGamma = gamma;
+                    neededC = c;
+                }
+                System.out.println(String.format("F-Measure %f --- with C = %f and gamma = %f", fMeasure, c, gamma));
             }
-            System.out.println("F-Measure " + fMeasure + " --- with C = " + c);
         }
         testMachine.setC(neededC);
+        testMachine.setKernel(new RBFKernel(neededGamma));
         Statistics statistics = testMachine.test(first);
         System.out.println(statistics.getFMeasure());
     }

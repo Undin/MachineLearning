@@ -3,7 +3,6 @@ package com.ifmo.machinelearning.homework3;
 import com.ifmo.machinelearning.Point;
 import com.ifmo.machinelearning.library.Classifier;
 import com.ifmo.machinelearning.library.Kernel2;
-import com.ifmo.machinelearning.library.svm.SVMClassifier;
 import com.ifmo.machinelearning.test.TestMachine;
 
 import java.util.List;
@@ -41,7 +40,7 @@ public class SVMTestMachine extends TestMachine<Point> {
 
     @Override
     protected Classifier<Point> createClassifier(List<Point> dataSet) {
-        return new SVMClassifier<>(dataSet, kernel, c);
+        return new PointSVMClassifier(dataSet, kernel, c);
     }
 
 }
