@@ -54,14 +54,68 @@ public class SVMClassifier<T extends ClassifiedData> extends Classifier<T> {
         while (passes < MAX_PASSES) {
             boolean hasChanged = false;
             for (int i = 0; i < size; i++) {
-                double ei = function(getData().get(i)) - modifiedClassIds[i];
+                double ei = calculateE(i);
                 if (modifiedClassIds[i] * ei < -EPS && alphas[i] < c ||
                     modifiedClassIds[i] * ei >  EPS && alphas[i] > 0) {
-
+                    int j;
+                    do {
+                        j = random.nextInt(size);
+                    } while (j == i);
+                    double ej = calculateE(j);
+                    double oldAlphaI = alphas[i];
+                    double oldAlphaJ = alphas[j];
+                    double l, h;
+                    if (modifiedClassIds[i] != modifiedClassIds[j]) {
+                        l = Math.max(0, oldAlphaJ - oldAlphaI);
+                        h = Math.min(c, c + oldAlphaJ - oldAlphaI);
+                    } else {
+                        l = Math.max(0, oldAlphaI + oldAlphaJ - c);
+                        h = Math.min(c, oldAlphaI + oldAlphaJ);
+                    }
+                    if (l == h) {
+                        continue;
+                    }
+                    T xi = getData().get(i);
+                    T xj = getData().get(j);
+                    double n = 2 * kernelFunction.eval(xi, xj) - kernelFunction.eval(xi, xi) - kernelFunction.eval(xj, xj);
+                    if (n >= 0) {
+                        continue;
+                    }
+                    alphas[j] -= modifiedClassIds[j] * (ei - ej) / n;
+                    if (alphas[j] > h) {
+                        alphas[j] = h;
+                    } else if (alphas[j] < l) {
+                        alphas[j] = l;
+                    }
+                    if (Math.abs(alphas[j] - oldAlphaJ) < EPS) {
+                        continue;
+                    }
+                    alphas[i] += modifiedClassIds[i] * modifiedClassIds[j] * (alphas[j] - oldAlphaJ);
+                    double b1 = b - ei - modifiedClassIds[i] * (alphas[i] - oldAlphaI) * kernelFunction.eval(xi, xi) -
+                                         modifiedClassIds[j] * (alphas[j] - oldAlphaJ) * kernelFunction.eval(xi, xj);
+                    double b2 = b - ej - modifiedClassIds[i] * (alphas[i] - oldAlphaI) * kernelFunction.eval(xi, xj) -
+                            modifiedClassIds[j] * (alphas[j] - oldAlphaJ) * kernelFunction.eval(xj, xj);
+                    if (alphas[i] > 0 && alphas[i] < c) {
+                        b = b1;
+                    } else if (alphas[j] > 0 && alphas[j] < c) {
+                        b = b2;
+                    } else {
+                        b = (b1 + b2) / 2;
+                    }
+                    hasChanged = true;
                 }
+            }
+            if (!hasChanged) {
+                passes++;
+            } else {
+                passes = 0;
             }
         }
         return alphas;
+    }
+
+    private double calculateE(int i) {
+        return function(getData().get(i)) - modifiedClassIds[i];
     }
 
     protected double function(T t) {
