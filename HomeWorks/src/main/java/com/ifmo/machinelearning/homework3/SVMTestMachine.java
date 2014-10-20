@@ -2,6 +2,7 @@ package com.ifmo.machinelearning.homework3;
 
 import com.ifmo.machinelearning.library.AbstractInstanceClassifier;
 import com.ifmo.machinelearning.library.ClassifiedInstance;
+import com.ifmo.machinelearning.library.svm.InnerProductKernel;
 import com.ifmo.machinelearning.library.svm.Kernel;
 import com.ifmo.machinelearning.library.test.TestMachine;
 
@@ -21,6 +22,7 @@ public class SVMTestMachine extends TestMachine {
 
     public SVMTestMachine(List<ClassifiedInstance> dataSet, boolean parallelTest) {
         super(dataSet, parallelTest);
+        kernel = new InnerProductKernel();
     }
 
     public void setC(double c) {
