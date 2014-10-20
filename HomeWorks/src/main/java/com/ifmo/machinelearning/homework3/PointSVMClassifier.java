@@ -1,8 +1,8 @@
 package com.ifmo.machinelearning.homework3;
 
-import com.ifmo.machinelearning.library.ClassifiedInstance;
-import com.ifmo.machinelearning.library.svm.Kernel;
-import com.ifmo.machinelearning.library.svm.SVMClassifier;
+import com.ifmo.machinelearning.library.core.ClassifiedInstance;
+import com.ifmo.machinelearning.library.classifiers.svm.Kernel;
+import com.ifmo.machinelearning.library.classifiers.svm.SVMClassifier;
 
 import java.util.List;
 

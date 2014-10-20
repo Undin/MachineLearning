@@ -1,7 +1,7 @@
 package com.ifmo.machinelearning.library.test;
 
-import com.ifmo.machinelearning.library.AbstractInstanceClassifier;
-import com.ifmo.machinelearning.library.ClassifiedInstance;
+import com.ifmo.machinelearning.library.classifiers.AbstractInstanceClassifier;
+import com.ifmo.machinelearning.library.core.ClassifiedInstance;
 
 import java.util.List;
 

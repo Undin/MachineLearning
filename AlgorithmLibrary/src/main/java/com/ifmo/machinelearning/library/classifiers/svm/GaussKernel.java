@@ -1,7 +1,7 @@
-package com.ifmo.machinelearning.library.svm;
+package com.ifmo.machinelearning.library.classifiers.svm;
 
-import com.ifmo.machinelearning.library.Instance;
-import com.ifmo.machinelearning.library.knn.EuclideanDistance;
+import com.ifmo.machinelearning.library.core.Instance;
+import com.ifmo.machinelearning.library.classifiers.knn.EuclideanDistance;
 
 import static java.lang.StrictMath.exp;
 import static java.lang.StrictMath.pow;

@@ -1,6 +1,7 @@
-package com.ifmo.machinelearning.library.knn;
+package com.ifmo.machinelearning.library.classifiers.knn;
 
-import com.ifmo.machinelearning.library.*;
+import com.ifmo.machinelearning.library.classifiers.AbstractInstanceClassifier;
+import com.ifmo.machinelearning.library.core.ClassifiedInstance;
 
 import java.util.Arrays;
 import java.util.List;

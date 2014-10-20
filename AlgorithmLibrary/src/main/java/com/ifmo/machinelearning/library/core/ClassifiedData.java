@@ -1,4 +1,4 @@
-package com.ifmo.machinelearning.library;
+package com.ifmo.machinelearning.library.core;
 
 /**
  * Interface that has the following methods:

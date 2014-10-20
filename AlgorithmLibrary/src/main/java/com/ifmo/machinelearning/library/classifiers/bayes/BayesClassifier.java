@@ -1,6 +1,7 @@
-package com.ifmo.machinelearning.library.bayes;
+package com.ifmo.machinelearning.library.classifiers.bayes;
 
-import com.ifmo.machinelearning.library.*;
+import com.ifmo.machinelearning.library.classifiers.AbstractInstanceClassifier;
+import com.ifmo.machinelearning.library.core.ClassifiedInstance;
 
 import java.util.List;
 

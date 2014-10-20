@@ -1,10 +1,10 @@
 package com.ifmo.machinelearning.homework1;
 
-import com.ifmo.machinelearning.library.AbstractInstanceClassifier;
-import com.ifmo.machinelearning.library.ClassifiedInstance;
-import com.ifmo.machinelearning.library.knn.DistanceWeight;
-import com.ifmo.machinelearning.library.knn.KNN;
-import com.ifmo.machinelearning.library.knn.ManhattanDistance;
+import com.ifmo.machinelearning.library.classifiers.AbstractInstanceClassifier;
+import com.ifmo.machinelearning.library.core.ClassifiedInstance;
+import com.ifmo.machinelearning.library.classifiers.knn.DistanceWeight;
+import com.ifmo.machinelearning.library.classifiers.knn.KNN;
+import com.ifmo.machinelearning.library.classifiers.knn.ManhattanDistance;
 import com.ifmo.machinelearning.library.test.TestMachine;
 
 import java.util.List;

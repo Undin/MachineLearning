@@ -1,6 +1,6 @@
-package com.ifmo.machinelearning.library.knn;
+package com.ifmo.machinelearning.library.classifiers.knn;
 
-import com.ifmo.machinelearning.library.Instance;
+import com.ifmo.machinelearning.library.core.Instance;
 
 /**
  * Created by warrior on 19.09.14.

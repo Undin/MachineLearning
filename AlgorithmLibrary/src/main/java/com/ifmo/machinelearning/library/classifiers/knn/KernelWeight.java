@@ -1,4 +1,4 @@
-package com.ifmo.machinelearning.library.knn;
+package com.ifmo.machinelearning.library.classifiers.knn;
 
 /**
  * Created by Whiplash on 21.09.2014.

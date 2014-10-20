@@ -1,4 +1,4 @@
-package com.ifmo.machinelearning.library.knn;
+package com.ifmo.machinelearning.library.classifiers.knn;
 
 import static java.lang.StrictMath.abs;
 import static java.lang.StrictMath.exp;

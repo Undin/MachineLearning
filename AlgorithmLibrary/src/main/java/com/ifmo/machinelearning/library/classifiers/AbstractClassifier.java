@@ -1,10 +1,12 @@
-package com.ifmo.machinelearning.library;
+package com.ifmo.machinelearning.library.classifiers;
+
+import com.ifmo.machinelearning.library.core.ClassifiedData;
 
 import java.util.List;
 
 /**
  * Interface class that has the following methods:
- * {@link #training()} and {@link #getSupposedClassId(ClassifiedData)}
+ * {@link #training()} and {@link #getSupposedClassId(com.ifmo.machinelearning.library.core.ClassifiedData)}
  * <p>
  * Created by warrior on 19.09.14.
  */

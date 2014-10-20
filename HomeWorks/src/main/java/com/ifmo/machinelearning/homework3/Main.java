@@ -1,7 +1,7 @@
 package com.ifmo.machinelearning.homework3;
 
-import com.ifmo.machinelearning.library.ClassifiedInstance;
-import com.ifmo.machinelearning.library.InstanceCreator;
+import com.ifmo.machinelearning.library.core.ClassifiedInstance;
+import com.ifmo.machinelearning.library.core.InstanceCreator;
 import com.ifmo.machinelearning.library.test.Statistics;
 
 import java.io.IOException;

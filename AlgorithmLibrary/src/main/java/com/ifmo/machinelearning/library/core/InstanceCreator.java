@@ -1,4 +1,4 @@
-package com.ifmo.machinelearning.library;
+package com.ifmo.machinelearning.library.core;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

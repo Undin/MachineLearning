@@ -1,8 +1,8 @@
 package com.ifmo.machinelearning.homework3;
 
-import com.ifmo.machinelearning.library.ClassifiedInstance;
-import com.ifmo.machinelearning.library.InstanceCreator;
-import com.ifmo.machinelearning.library.svm.InnerProductKernel;
+import com.ifmo.machinelearning.library.core.ClassifiedInstance;
+import com.ifmo.machinelearning.library.core.InstanceCreator;
+import com.ifmo.machinelearning.library.classifiers.svm.InnerProductKernel;
 import com.ifmo.machinelearning.library.test.Statistics;
 import javafx.application.Application;
 import javafx.scene.Group;

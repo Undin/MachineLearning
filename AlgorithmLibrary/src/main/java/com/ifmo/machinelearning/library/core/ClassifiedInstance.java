@@ -1,4 +1,4 @@
-package com.ifmo.machinelearning.library;
+package com.ifmo.machinelearning.library.core;
 
 /**
  * Created by warrior on 20.10.14.

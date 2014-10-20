@@ -1,4 +1,6 @@
-package com.ifmo.machinelearning.library;
+package com.ifmo.machinelearning.library.classifiers;
+
+import com.ifmo.machinelearning.library.core.ClassifiedInstance;
 
 import java.util.List;
 
