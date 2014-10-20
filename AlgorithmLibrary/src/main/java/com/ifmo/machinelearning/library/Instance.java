@@ -21,6 +21,10 @@ public class Instance {
         this.attributeValues = attributeValues;
     }
 
+    public int getAttributeNumber() {
+        return attributeNames.length;
+    }
+
     public String getAttributeName(int i) {
         return attributeNames[i];
     }
