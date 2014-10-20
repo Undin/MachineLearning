@@ -17,7 +17,7 @@ public class SVMTestMachine extends TestMachine {
     private Kernel kernel;
 
     public SVMTestMachine(List<ClassifiedInstance> dataSet) {
-        super(dataSet);
+        this(dataSet, false);
     }
 
     public SVMTestMachine(List<ClassifiedInstance> dataSet, boolean parallelTest) {

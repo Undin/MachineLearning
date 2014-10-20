@@ -24,7 +24,7 @@ public class PointSVMClassifier extends SVMClassifier {
         super.trainingInternal();
         for (int j = 0; j < ATTRIBUTE_NUMBER; j++) {
             for (int i = 0; i < size; i++) {
-                w[j] += alphas[i] * modifiedClassIds[i] * get(i).getAttributeValue(i);
+                w[j] += alphas[i] * modifiedClassIds[i] * get(i).getAttributeValue(j);
             }
         }
     }
