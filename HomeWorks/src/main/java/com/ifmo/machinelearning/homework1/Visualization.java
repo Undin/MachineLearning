@@ -56,9 +56,9 @@ public class Visualization extends Application {
         for (double x = -1.5; x < 1.5; x += 0.01) {
             for (double y = -1.5; y < 1.5; y += 0.01) {
                 if (classifier.getSupposedClassId(new ClassifiedInstance(ATTRIBUTES_NAMES, new double[]{x, y}, 2)) == 1) {
-                    gc.fillOval(x * 300 + WIDTH / 2, y * 300 + HEIGHT / 2, LINE_WIDTH + 1, LINE_WIDTH + 1);
+                    gc.fillOval(x * 300 + WIDTH / 2, -y * 300 + HEIGHT / 2, LINE_WIDTH + 1, LINE_WIDTH + 1);
                 } else {
-                    gc.strokeOval(x * 300 + WIDTH / 2, y * 300 + HEIGHT / 2, 1, 1);
+                    gc.strokeOval(x * 300 + WIDTH / 2, -y * 300 + HEIGHT / 2, 1, 1);
                 }
             }
         }
