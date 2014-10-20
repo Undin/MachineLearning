@@ -1,7 +1,5 @@
 package com.ifmo.machinelearning.library.knn;
 
-import com.ifmo.machinelearning.library.Kernel;
-
 /**
  * Created by Whiplash on 21.09.2014.
  */
