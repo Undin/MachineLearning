@@ -19,7 +19,16 @@ public class InstanceCreator {
     private InstanceCreator() {
     }
 
-    public static List<Instance> createFromFile(String fileName) {
+    public static List<ClassifiedInstance> classifiedInstancesFromFile(String fileName) {
+        List<Instance> instances = instancesFromFile(fileName);
+        List<ClassifiedInstance> classifiedInstances = new ArrayList<>(instances.size());
+        for (Instance instance : instances) {
+            classifiedInstances.add((ClassifiedInstance) instance);
+        }
+        return classifiedInstances;
+    }
+
+    public static List<Instance> instancesFromFile(String fileName) {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(fileName));
