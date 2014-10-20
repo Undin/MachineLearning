@@ -1,27 +1,25 @@
 package com.ifmo.machinelearning.homework3;
 
-import com.ifmo.machinelearning.Point;
-import com.ifmo.machinelearning.library.Classifier;
-import com.ifmo.machinelearning.library.Kernel2;
-import com.ifmo.machinelearning.test.TestMachine;
+import com.ifmo.machinelearning.library.AbstractInstanceClassifier;
+import com.ifmo.machinelearning.library.ClassifiedInstance;
+import com.ifmo.machinelearning.library.svm.Kernel;
+import com.ifmo.machinelearning.library.test.TestMachine;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by Whiplash on 19.09.2014.
  */
-public class SVMTestMachine extends TestMachine<Point> {
+public class SVMTestMachine extends TestMachine {
 
     private double c = 1;
-    private Kernel2<Point> kernel;
+    private Kernel kernel;
 
-    public SVMTestMachine(List<Point> dataSet) {
+    public SVMTestMachine(List<ClassifiedInstance> dataSet) {
         super(dataSet);
     }
 
-    public SVMTestMachine(List<Point> dataSet, boolean parallelTest) {
+    public SVMTestMachine(List<ClassifiedInstance> dataSet, boolean parallelTest) {
         super(dataSet, parallelTest);
     }
 
@@ -29,18 +27,12 @@ public class SVMTestMachine extends TestMachine<Point> {
         this.c = c;
     }
 
-    public void setKernel(Kernel2<Point> kernel) {
+    public void setKernel(Kernel kernel) {
         this.kernel = kernel;
     }
 
     @Override
-    protected ExecutorService generateExecutorService() {
-        return Executors.newFixedThreadPool(3);
-    }
-
-    @Override
-    protected Classifier<Point> createClassifier(List<Point> dataSet) {
+    protected AbstractInstanceClassifier createClassifier(List<ClassifiedInstance> dataSet) {
         return new PointSVMClassifier(dataSet, kernel, c);
     }
-
 }

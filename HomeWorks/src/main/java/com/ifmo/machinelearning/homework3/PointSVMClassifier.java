@@ -1,8 +1,7 @@
 package com.ifmo.machinelearning.homework3;
 
-import com.ifmo.machinelearning.Point;
-import com.ifmo.machinelearning.library.Classifier;
-import com.ifmo.machinelearning.library.Kernel2;
+import com.ifmo.machinelearning.library.ClassifiedInstance;
+import com.ifmo.machinelearning.library.svm.Kernel;
 import com.ifmo.machinelearning.library.svm.SVMClassifier;
 
 import java.util.List;
@@ -10,22 +9,24 @@ import java.util.List;
 /**
  * Created by warrior on 19.10.14.
  */
-public class PointSVMClassifier extends SVMClassifier<Point> {
+public class PointSVMClassifier extends SVMClassifier {
+
+    private static final int ATTRIBUTE_NUMBER = 2;
 
     private double[] w = new double[2];
 
-    public PointSVMClassifier(List<Point> data, Kernel2<Point> kernelFunction, double c) {
+    public PointSVMClassifier(List<ClassifiedInstance> data, Kernel kernelFunction, double c) {
         super(data, kernelFunction, c);
     }
 
     @Override
-    public Classifier<Point> training() {
-        super.training();
-        for (int i = 0; i < getData().size(); i++) {
-            w[0] += alphas[i] * modifiedClassIds[i] * getData().get(i).getX();
-            w[1] += alphas[i] * modifiedClassIds[i] * getData().get(i).getY();
+    protected void trainingInternal() {
+        super.trainingInternal();
+        for (int j = 0; j < ATTRIBUTE_NUMBER; j++) {
+            for (int i = 0; i < size; i++) {
+                w[j] += alphas[i] * modifiedClassIds[i] * get(i).getAttributeValue(i);
+            }
         }
-        return this;
     }
 
     public double getK() {
