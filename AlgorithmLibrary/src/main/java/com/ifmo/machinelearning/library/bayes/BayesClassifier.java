@@ -1,7 +1,6 @@
 package com.ifmo.machinelearning.library.bayes;
 
-import com.ifmo.machinelearning.library.ClassifiedData;
-import com.ifmo.machinelearning.library.Classifier;
+import com.ifmo.machinelearning.library.*;
 
 import java.util.List;
 
@@ -10,35 +9,34 @@ import static java.lang.StrictMath.log;
 /**
  * Created by warrior on 29.09.14.
  */
-public abstract class BayesClassifier<T extends ClassifiedData> extends Classifier<T> {
+public abstract class BayesClassifier extends AbstractInstanceClassifier {
 
     private double lnPrioriProbability[];
 
-    public BayesClassifier(List<T> data) {
+    public BayesClassifier(List<ClassifiedInstance> data) {
         super(data);
     }
 
     @Override
-    public Classifier<T> training() {
+    protected void trainingInternal() {
         calculatePrioriProbability();
         calculateCredibilityFunction();
-        return this;
     }
 
     protected void calculatePrioriProbability() {
         lnPrioriProbability = new double[getClassNumber()];
         getData().forEach(t -> lnPrioriProbability[t.getClassId()] += 1);
         for (int i = 0; i < getClassNumber(); i++) {
-            lnPrioriProbability[i] = log(lnPrioriProbability[i]) - log(getData().size());
+            lnPrioriProbability[i] = log(lnPrioriProbability[i]) - log(size);
         }
     }
 
     @Override
-    public int getSupposedClassId(T t) {
+    public int getSupposedClassId(ClassifiedInstance instance) {
         int supposedClassId = 0;
         double maxValue = -Double.MAX_VALUE;
         for (int i = 0; i < getClassNumber(); i++) {
-            double value = lnPrioriProbability[i] + credibilityFunctionLn(t, i);
+            double value = lnPrioriProbability[i] + credibilityFunctionLn(instance, i);
             if (value > maxValue) {
                 supposedClassId = i;
                 maxValue = value;
@@ -49,5 +47,5 @@ public abstract class BayesClassifier<T extends ClassifiedData> extends Classifi
 
     protected abstract void calculateCredibilityFunction();
 
-    protected abstract double credibilityFunctionLn(T t, int classId);
+    protected abstract double credibilityFunctionLn(ClassifiedInstance instance, int classId);
 }
