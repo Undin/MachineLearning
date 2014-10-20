@@ -6,6 +6,5 @@ repositories {
 
 dependencies {
     compile project(':AlgorithmLibrary')
-    compile project(':TestModule')
     compile project(':Graphics')
 }
