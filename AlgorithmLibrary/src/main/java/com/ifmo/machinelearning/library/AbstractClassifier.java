@@ -8,12 +8,12 @@ import java.util.List;
  * <p>
  * Created by warrior on 19.09.14.
  */
-public abstract class Classifier<T extends ClassifiedData> {
+public abstract class AbstractClassifier<T extends ClassifiedData> {
 
-    private final List<T> data;
-    private final int classNumber;
+    protected final List<T> data;
+    protected final int classNumber;
 
-    public Classifier(List<T> data) {
+    public AbstractClassifier(List<T> data) {
         if (data == null || data.isEmpty()) {
             throw new IllegalArgumentException("data must be not empty");
         }
@@ -32,9 +32,14 @@ public abstract class Classifier<T extends ClassifiedData> {
     /**
      * Trains algorithm (if it need)
      *
-     * @return {@link com.ifmo.machinelearning.library.Classifier} trained algorithm
+     * @return {@link AbstractClassifier} trained algorithm
      */
-    public abstract Classifier<T> training();
+    public AbstractClassifier<T> training() {
+        trainingInternal();
+        return this;
+    }
+
+    protected abstract AbstractClassifier<T> trainingInternal();
 
     /**
      * Returns identifier of class of {@code t}
@@ -45,5 +50,4 @@ public abstract class Classifier<T extends ClassifiedData> {
      * @return class id of {@code t}
      */
     public abstract int getSupposedClassId(T t);
-
 }
