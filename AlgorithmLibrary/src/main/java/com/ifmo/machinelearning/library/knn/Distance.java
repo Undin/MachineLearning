@@ -1,12 +1,14 @@
 package com.ifmo.machinelearning.library.knn;
 
+import com.ifmo.machinelearning.library.Instance;
+
 /**
  * Interface class that has the following methods:
- * {@link #distance(Object, Object)}
+ * {@link #distance(Instance, Instance)}
  * <p>
  * Created by Whiplash on 15.09.2014.
  */
-public interface Distance<T, E> {
+public interface Distance {
 
     /**
      * Measures distance between {@code first} and {@code second}
@@ -15,6 +17,6 @@ public interface Distance<T, E> {
      * @param second another element
      * @return calculated distance
      */
-    public E distance(T first, T second);
+    public double distance(Instance first, Instance second);
 
 }
