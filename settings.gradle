@@ -1,6 +1,5 @@
 rootProject.name = 'MachineLearningFramework'
 
-include 'TestModule'
 include 'AlgorithmLibrary'
 include 'Graphics'
 include 'HomeWorks'

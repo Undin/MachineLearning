@@ -1,4 +1,4 @@
-package com.ifmo.machinelearning.test;
+package com.ifmo.machinelearning.library.test;
 
 /**
  * Structure for holding

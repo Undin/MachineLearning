@@ -1,7 +1,7 @@
-package com.ifmo.machinelearning.test;
+package com.ifmo.machinelearning.library.test;
 
 import com.ifmo.machinelearning.library.ClassifiedData;
-import com.ifmo.machinelearning.library.Classifier;
+import com.ifmo.machinelearning.library.AbstractClassifier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +19,6 @@ public abstract class TestMachine<T extends ClassifiedData> {
     private boolean parallelTest;
 
     private int size;
-    private int classNumber;
     private int[][] testConfusionMatrix;
 
     public TestMachine(List<T> dataSet) {
@@ -31,7 +30,7 @@ public abstract class TestMachine<T extends ClassifiedData> {
         this.dataSet = new ArrayList<>(dataSet);
         this.parallelTest = parallelTest;
         size = dataSet.size();
-        classNumber = dataSet.get(0).getClassNumber();
+        int classNumber = dataSet.get(0).getClassNumber();
         testConfusionMatrix = new int[classNumber][classNumber];
     }
 
@@ -86,7 +85,7 @@ public abstract class TestMachine<T extends ClassifiedData> {
 
     protected Statistics testInternal(List<T> trainingData, List<T> testData) {
         clearConfusionMatrix();
-        Classifier<T> classifier = createClassifier(trainingData).training();
+        AbstractClassifier<T> classifier = createClassifier(trainingData).training();
         if (parallelTest) {
             testInternal(classifier, testData, testConfusionMatrix);
         } else {
@@ -95,13 +94,13 @@ public abstract class TestMachine<T extends ClassifiedData> {
         return getCurrentStatistic();
     }
 
-    protected void testInternal(Classifier<T> classifier, List<T> dataSet, int[][] confusionMatrix) {
+    protected void testInternal(AbstractClassifier<T> classifier, List<T> dataSet, int[][] confusionMatrix) {
         for (T t : dataSet) {
             confusionMatrix[classifier.getSupposedClassId(t)][t.getClassId()]++;
         }
     }
 
-    protected void parallelTestInternal(Classifier<T> classifier, List<T> dataSet, int[][] confusionMatrix) {
+    protected void parallelTestInternal(AbstractClassifier<T> classifier, List<T> dataSet, int[][] confusionMatrix) {
         ExecutorService executor = generateExecutorService();
         List<Future<Integer>> futureList = new ArrayList<>(dataSet.size());
         for (T t : dataSet) {
@@ -146,6 +145,6 @@ public abstract class TestMachine<T extends ClassifiedData> {
         this.parallelTest = parallelTest;
     }
 
-    protected abstract Classifier<T> createClassifier(List<T> dataSet);
+    protected abstract AbstractClassifier<T> createClassifier(List<T> dataSet);
 
 }
