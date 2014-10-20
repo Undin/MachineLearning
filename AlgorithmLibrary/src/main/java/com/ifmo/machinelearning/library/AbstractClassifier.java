@@ -11,6 +11,7 @@ import java.util.List;
 public abstract class AbstractClassifier<T extends ClassifiedData> {
 
     protected final List<T> data;
+    protected final int size;
     protected final int classNumber;
 
     public AbstractClassifier(List<T> data) {
@@ -18,6 +19,7 @@ public abstract class AbstractClassifier<T extends ClassifiedData> {
             throw new IllegalArgumentException("data must be not empty");
         }
         this.data = data;
+        this.size = data.size();
         this.classNumber = data.get(0).getClassNumber();
     }
 
