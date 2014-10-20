@@ -24,6 +24,9 @@ public class VisualizationExtra extends Application {
 
     private static final String TITLE = "SVM visualization";
 
+    private static final double C = 8;
+    private static final double GAMMA = 0.5;
+
     private static final double SCALE = 300;
 
     private static final int LINE_WIDTH = 2;
@@ -49,7 +52,7 @@ public class VisualizationExtra extends Application {
             int value = Integer.parseInt(st.nextToken());
             sample.add(new Point(x, y, value));
         }
-        Classifier<Point> classifier = new SVMClassifier<>(sample, new RBFKernel(0.5), 8);
+        Classifier<Point> classifier = new SVMClassifier<>(sample, new RBFKernel(GAMMA), C);
         drawValues(canvas.getGraphicsContext2D(), classifier.training());
         drawValues(canvas.getGraphicsContext2D(), sample);
         primaryStage.show();

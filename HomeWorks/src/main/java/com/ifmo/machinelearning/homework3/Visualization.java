@@ -23,6 +23,8 @@ public class Visualization extends Application {
 
     private static final String TITLE = "SVM visualization";
 
+    private static final double C = 2D;
+
     private static final double SCALE = 30;
 
     private static final int LINE_WIDTH = 4;
@@ -52,7 +54,7 @@ public class Visualization extends Application {
 
         SVMTestMachine testMachine = new SVMTestMachine(sample);
         testMachine.setKernel(InnerProductKernel.getInstance());
-        testMachine.setC(2);
+        testMachine.setC(C);
         Statistics statistics = testMachine.test(sample);
         System.out.println(statistics.getFMeasure());
 
