@@ -39,7 +39,7 @@ public abstract class AbstractClassifier<T extends ClassifiedData> {
         return this;
     }
 
-    protected abstract AbstractClassifier<T> trainingInternal();
+    protected abstract void trainingInternal();
 
     /**
      * Returns identifier of class of {@code t}
