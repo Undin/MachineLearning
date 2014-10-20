@@ -27,6 +27,10 @@ public abstract class AbstractClassifier<T extends ClassifiedData> {
         return data;
     }
 
+    protected T get(int i) {
+        return data.get(i);
+    }
+
     protected int getClassNumber() {
         return classNumber;
     }
