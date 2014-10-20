@@ -1,15 +1,13 @@
 package com.ifmo.machinelearning.homework3;
 
-import com.ifmo.machinelearning.Point;
-import com.ifmo.machinelearning.test.Statistics;
+import com.ifmo.machinelearning.library.ClassifiedInstance;
+import com.ifmo.machinelearning.library.InstanceCreator;
+import com.ifmo.machinelearning.library.test.Statistics;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Created by Whiplash on 05.10.2014.
@@ -20,23 +18,12 @@ public class Main {
     private static final int ROUNDS = 50;
 
     public static void main(String[] args) throws IOException {
-        List<Point> sample = new ArrayList<>();
-        BufferedReader bf = new BufferedReader(new FileReader("./HomeWorks/res/homework3/LinearDataset"));
-        String line;
-        while ((line = bf.readLine()) != null) {
-            StringTokenizer st = new StringTokenizer(line, " ");
-            double x = Double.parseDouble(st.nextToken());
-            double y = Double.parseDouble(st.nextToken());
-            int value = Integer.parseInt(st.nextToken());
-            sample.add(new Point(x, y, value));
-        }
-
+        List<ClassifiedInstance> sample = InstanceCreator.classifiedInstancesFromFile("./HomeWorks/res/homework3/LinearDataset");
         Collections.shuffle(sample);
-        List<Point> first = new ArrayList<>(sample.subList(0, sample.size() / 5));
-        List<Point> second = new ArrayList<>(sample.subList(sample.size() / 5, sample.size()));
+        List<ClassifiedInstance> first = new ArrayList<>(sample.subList(0, sample.size() / 5));
+        List<ClassifiedInstance> second = new ArrayList<>(sample.subList(sample.size() / 5, sample.size()));
 
         SVMTestMachine testMachine = new SVMTestMachine(second, true);
-        testMachine.setKernel(InnerProductKernel.getInstance());
         double neededC = 0;
         double maxFMeasure = 0;
         for (int cPow = -5; cPow <= 11; cPow += 2) {
@@ -54,5 +41,4 @@ public class Main {
         Statistics statistics = testMachine.test(first);
         System.out.println(statistics.getFMeasure());
     }
-
 }

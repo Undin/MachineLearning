@@ -1,7 +1,8 @@
 package com.ifmo.machinelearning.homework3;
 
-import com.ifmo.machinelearning.Point;
-import com.ifmo.machinelearning.library.Classifier;
+import com.ifmo.machinelearning.library.ClassifiedInstance;
+import com.ifmo.machinelearning.library.InstanceCreator;
+import com.ifmo.machinelearning.library.svm.GaussKernel;
 import com.ifmo.machinelearning.library.svm.SVMClassifier;
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -11,11 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Created by Whiplash on 05.10.2014.
@@ -23,6 +20,7 @@ import java.util.StringTokenizer;
 public class VisualizationExtra extends Application {
 
     private static final String TITLE = "SVM visualization";
+    private static final String[] ATTRIBUTES_NAMES = {"x", "y"};
 
     private static final double C = 8;
     private static final double GAMMA = 0.5;
@@ -42,29 +40,21 @@ public class VisualizationExtra extends Application {
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
 
-        List<Point> sample = new ArrayList<>();
-        BufferedReader bf = new BufferedReader(new FileReader("./HomeWorks/res/homework1/chips.txt"));
-        String line;
-        while ((line = bf.readLine()) != null) {
-            StringTokenizer st = new StringTokenizer(line, ", ");
-            double x = Double.parseDouble(st.nextToken());
-            double y = Double.parseDouble(st.nextToken());
-            int value = Integer.parseInt(st.nextToken());
-            sample.add(new Point(x, y, value));
-        }
-        Classifier<Point> classifier = new SVMClassifier<>(sample, new RBFKernel(GAMMA), C);
-        drawValues(canvas.getGraphicsContext2D(), classifier.training());
+        List<ClassifiedInstance> sample = InstanceCreator.classifiedInstancesFromFile("./HomeWorks/res/homework1/chips.txt");
+        SVMClassifier classifier = new SVMClassifier(sample, new GaussKernel(GAMMA), C);
+        classifier.training();
+        drawValues(canvas.getGraphicsContext2D(), classifier);
         drawValues(canvas.getGraphicsContext2D(), sample);
         primaryStage.show();
     }
 
-    private void drawValues(GraphicsContext gc, Classifier<Point> classifier) {
+    private void drawValues(GraphicsContext gc, SVMClassifier classifier) {
         gc.setFill(Color.BURLYWOOD);
         gc.setStroke(Color.WHITE);
         gc.setLineWidth(LINE_WIDTH);
         for (double x = -1.5; x < 1.5; x += 0.01) {
             for (double y = -1.5; y < 1.5; y += 0.01) {
-                if (classifier.getSupposedClassId(new Point(x, y)) == 1) {
+                if (classifier.getSupposedClassId(new ClassifiedInstance(ATTRIBUTES_NAMES, new double[]{x, y}, 2)) == 1) {
                     gc.fillOval(x * SCALE + WIDTH / 2, -y * SCALE + HEIGHT / 2, LINE_WIDTH + 1, LINE_WIDTH + 1);
                 } else {
                     gc.strokeOval(x * SCALE + WIDTH / 2, -y * SCALE + HEIGHT / 2, 1, 1);
@@ -73,15 +63,15 @@ public class VisualizationExtra extends Application {
         }
     }
 
-    private void drawValues(GraphicsContext gc, List<Point> sample) {
+    private void drawValues(GraphicsContext gc, List<ClassifiedInstance> sample) {
         gc.setFill(Color.RED);
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(LINE_WIDTH);
-        for (Point point : sample) {
+        for (ClassifiedInstance point : sample) {
             if (point.getClassId() == 1) {
-                gc.fillOval(point.getX() * SCALE + WIDTH / 2, -point.getY() * SCALE + HEIGHT / 2, LINE_WIDTH + 1, LINE_WIDTH + 1);
+                gc.fillOval(point.getAttributeValue(0) * SCALE + WIDTH / 2, -point.getAttributeValue(1) * SCALE + HEIGHT / 2, LINE_WIDTH + 1, LINE_WIDTH + 1);
             } else {
-                gc.strokeOval(point.getX() * SCALE + WIDTH / 2, -point.getY() * SCALE + HEIGHT / 2, 1, 1);
+                gc.strokeOval(point.getAttributeValue(0) * SCALE + WIDTH / 2, -point.getAttributeValue(1) * SCALE + HEIGHT / 2, 1, 1);
             }
         }
     }

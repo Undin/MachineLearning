@@ -1,7 +1,9 @@
 package com.ifmo.machinelearning.homework3;
 
-import com.ifmo.machinelearning.Point;
-import com.ifmo.machinelearning.test.Statistics;
+import com.ifmo.machinelearning.library.ClassifiedInstance;
+import com.ifmo.machinelearning.library.InstanceCreator;
+import com.ifmo.machinelearning.library.svm.InnerProductKernel;
+import com.ifmo.machinelearning.library.test.Statistics;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -10,11 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Created by Whiplash on 05.10.2014.
@@ -41,24 +39,13 @@ public class Visualization extends Application {
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
 
-        List<Point> sample = new ArrayList<>();
-        BufferedReader bf = new BufferedReader(new FileReader("./HomeWorks/res/homework3/LinearDataset"));
-        String line;
-        while ((line = bf.readLine()) != null) {
-            StringTokenizer st = new StringTokenizer(line, ", ");
-            double x = Double.parseDouble(st.nextToken());
-            double y = Double.parseDouble(st.nextToken());
-            int value = Integer.parseInt(st.nextToken());
-            sample.add(new Point(x, y, value));
-        }
-
+        List<ClassifiedInstance> sample = InstanceCreator.classifiedInstancesFromFile("./HomeWorks/res/homework3/LinearDataset");
         SVMTestMachine testMachine = new SVMTestMachine(sample);
-        testMachine.setKernel(InnerProductKernel.getInstance());
         testMachine.setC(C);
         Statistics statistics = testMachine.test(sample);
         System.out.println(statistics.getFMeasure());
 
-        PointSVMClassifier classifier = new PointSVMClassifier(sample, InnerProductKernel.getInstance(), 2);
+        PointSVMClassifier classifier = new PointSVMClassifier(sample, new InnerProductKernel(), 2);
         classifier.training();
         System.out.println(String.format("y = %f * x + %f", classifier.getK(), classifier.getB()));
 
@@ -74,15 +61,15 @@ public class Visualization extends Application {
         gc.strokeLine(HEIGHT / 2, 0, HEIGHT / 2, WIDTH);
     }
 
-    private void drawValues(GraphicsContext gc, List<Point> sample) {
+    private void drawValues(GraphicsContext gc, List<ClassifiedInstance> sample) {
         gc.setFill(Color.RED);
         gc.setStroke(Color.BLUE);
         gc.setLineWidth(LINE_WIDTH);
-        for (Point point : sample) {
+        for (ClassifiedInstance point : sample) {
             if (point.getClassId() == 1) {
-                gc.fillOval(point.getX() * SCALE + WIDTH / 2, -point.getY() * SCALE + HEIGHT / 2, LINE_WIDTH + 1, LINE_WIDTH + 1);
+                gc.fillOval(point.getAttributeValue(0) * SCALE + WIDTH / 2, -point.getAttributeValue(1) * SCALE + HEIGHT / 2, LINE_WIDTH + 1, LINE_WIDTH + 1);
             } else {
-                gc.strokeOval(point.getX() * SCALE + WIDTH / 2, -point.getY() * SCALE + HEIGHT / 2, 1, 1);
+                gc.strokeOval(point.getAttributeValue(0) * SCALE + WIDTH / 2, -point.getAttributeValue(1) * SCALE + HEIGHT / 2, 1, 1);
             }
         }
     }
