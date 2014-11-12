@@ -1,6 +1,6 @@
 rootProject.name = 'MachineLearningFramework'
 
 include 'AlgorithmLibrary'
-include 'Graphics'
+include 'Visualization'
 include 'HomeWorks'
 

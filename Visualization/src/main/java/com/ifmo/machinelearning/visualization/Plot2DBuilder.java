@@ -1,4 +1,4 @@
-package com.ifmo.machinelearning.graphics;
+package com.ifmo.machinelearning.visualization;
 
 import org.math.plot.Plot2DPanel;
 

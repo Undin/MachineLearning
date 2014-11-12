@@ -1,6 +1,6 @@
 package com.ifmo.machinelearning.homework1;
 
-import com.ifmo.machinelearning.graphics.Plot2DBuilder;
+import com.ifmo.machinelearning.visualization.Plot2DBuilder;
 import com.ifmo.machinelearning.library.core.ClassifiedInstance;
 import com.ifmo.machinelearning.library.core.InstanceCreator;
 import com.ifmo.machinelearning.library.test.Statistics;
