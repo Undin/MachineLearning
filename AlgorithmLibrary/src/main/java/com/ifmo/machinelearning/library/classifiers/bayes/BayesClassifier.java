@@ -19,7 +19,7 @@ public abstract class BayesClassifier extends AbstractInstanceClassifier {
     }
 
     @Override
-    protected void trainingInternal() {
+    protected void trainInternal() {
         calculatePrioriProbability();
         calculateCredibilityFunction();
     }

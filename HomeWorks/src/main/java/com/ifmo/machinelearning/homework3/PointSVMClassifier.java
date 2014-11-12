@@ -20,8 +20,8 @@ public class PointSVMClassifier extends SVMClassifier {
     }
 
     @Override
-    protected void trainingInternal() {
-        super.trainingInternal();
+    protected void trainInternal() {
+        super.trainInternal();
         for (int j = 0; j < ATTRIBUTE_NUMBER; j++) {
             for (int i = 0; i < size; i++) {
                 w[j] += alphas[i] * modifiedClassIds[i] * get(i).getAttributeValue(j);

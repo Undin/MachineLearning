@@ -42,7 +42,7 @@ public class KNN extends AbstractInstanceClassifier {
     }
 
     @Override
-    protected void trainingInternal() {
+    protected void trainInternal() {
     }
 
     @Override

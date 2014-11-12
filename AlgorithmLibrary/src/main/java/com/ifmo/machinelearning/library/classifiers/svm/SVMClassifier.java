@@ -29,7 +29,7 @@ public class SVMClassifier extends AbstractInstanceClassifier {
     }
 
     @Override
-    protected void trainingInternal() {
+    protected void trainInternal() {
         modifiedClassIds = new int[size];
         for (int i = 0; i < size; i++) {
             int classId = get(i).getClassId();

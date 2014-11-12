@@ -1,16 +1,17 @@
 package com.ifmo.machinelearning.library.classifiers;
 
 import com.ifmo.machinelearning.library.core.ClassifiedData;
+import com.ifmo.machinelearning.library.core.TrainingAlgorithm;
 
 import java.util.List;
 
 /**
  * Interface class that has the following methods:
- * {@link #training()} and {@link #getSupposedClassId(com.ifmo.machinelearning.library.core.ClassifiedData)}
+ * {@link #train()} and {@link #getSupposedClassId(com.ifmo.machinelearning.library.core.ClassifiedData)}
  * <p>
  * Created by warrior on 19.09.14.
  */
-public abstract class AbstractClassifier<T extends ClassifiedData> {
+public abstract class AbstractClassifier<T extends ClassifiedData> implements TrainingAlgorithm {
 
     protected final List<T> data;
     protected final int size;
@@ -42,17 +43,17 @@ public abstract class AbstractClassifier<T extends ClassifiedData> {
      *
      * @return {@link AbstractClassifier} trained algorithm
      */
-    public AbstractClassifier<T> training() {
-        trainingInternal();
+    public AbstractClassifier<T> train() {
+        trainInternal();
         return this;
     }
 
-    protected abstract void trainingInternal();
+    protected abstract void trainInternal();
 
     /**
      * Returns identifier of class of {@code t}
      * <p>
-     * (ATTENTION call {@link #training()} before if it need)
+     * (ATTENTION call {@link #train()} before if it need)
      *
      * @param t required element
      * @return class id of {@code t}
