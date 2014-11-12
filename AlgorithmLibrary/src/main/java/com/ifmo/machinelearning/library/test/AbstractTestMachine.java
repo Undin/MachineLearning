@@ -85,7 +85,7 @@ public abstract class AbstractTestMachine<T extends ClassifiedData> {
 
     protected Statistics testInternal(List<T> trainingData, List<T> testData) {
         clearConfusionMatrix();
-        AbstractClassifier<T> classifier = createClassifier(trainingData).training();
+        AbstractClassifier<T> classifier = createClassifier(trainingData).train();
         if (parallelTest) {
             testInternal(classifier, testData, testConfusionMatrix);
         } else {

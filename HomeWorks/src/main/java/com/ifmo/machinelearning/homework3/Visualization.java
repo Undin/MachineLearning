@@ -24,7 +24,7 @@ public class Visualization extends Drawing {
         System.out.println(statistics.getFMeasure());
 
         PointSVMClassifier classifier = new PointSVMClassifier(sample, new InnerProductKernel(), 2);
-        classifier.training();
+        classifier.train();
         System.out.println(String.format("y = %f * x + %f", classifier.getK(), classifier.getB()));
 
         drawAxis();

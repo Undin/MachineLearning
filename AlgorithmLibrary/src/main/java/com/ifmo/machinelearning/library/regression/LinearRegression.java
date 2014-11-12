@@ -36,16 +36,20 @@ public class LinearRegression implements TrainingAlgorithm {
                     F.put(i, j, instance.getAttributeValue(k));
                     j++;
                 } else {
-                    Y.put(i, 1, instance.getAttributeValue(k));
+                    Y.put(i, 0, instance.getAttributeValue(k));
                 }
             }
         }
         dataSet = null;
         DoubleMatrix transposedF = F.transpose();
         DoubleMatrix tI = DoubleMatrix.eye(attributeNumber).mul(penalty);
-        DoubleMatrix coef = Solve.pinv(transposedF.mul(F).add(tI)).mul(transposedF).mul(Y);
+        DoubleMatrix coef = Solve.pinv(transposedF.mmul(F).add(tI)).mmul(transposedF).mmul(Y);
         coefficients = coef.toArray();
         return this;
+    }
+
+    static final void printSize(String name, DoubleMatrix matrix) {
+        System.out.println(name + ": rows = " + matrix.rows + ", columns = " + matrix.columns);
     }
 
     public void setPenalty(double penalty) {

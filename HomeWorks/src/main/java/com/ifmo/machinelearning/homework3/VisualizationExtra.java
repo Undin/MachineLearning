@@ -20,7 +20,7 @@ public class VisualizationExtra extends Drawing {
     protected void initialize() {
         List<ClassifiedInstance> sample = InstanceCreator.classifiedInstancesFromFile("./HomeWorks/res/homework1/chips.txt");
         SVMClassifier classifier = new SVMClassifier(sample, new GaussKernel(GAMMA), C);
-        classifier.training();
+        classifier.train();
         drawValues(classifier, "x", "y");
         drawValues(sample);
     }
