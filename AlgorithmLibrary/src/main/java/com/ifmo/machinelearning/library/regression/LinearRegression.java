@@ -48,10 +48,6 @@ public class LinearRegression implements TrainingAlgorithm {
         return this;
     }
 
-    static final void printSize(String name, DoubleMatrix matrix) {
-        System.out.println(name + ": rows = " + matrix.rows + ", columns = " + matrix.columns);
-    }
-
     public void setPenalty(double penalty) {
         this.penalty = penalty;
     }
