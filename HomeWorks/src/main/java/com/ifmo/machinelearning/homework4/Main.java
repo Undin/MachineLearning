@@ -25,7 +25,6 @@ public class Main {
         double rmse = 0;
         for (Instance instance : test) {
             double value = regression.getSupposedValue(instance);
-            // System.out.println("real = " + instance.getAttributeValue(2) + ", res = " + value);
             rmse += Math.pow(instance.getAttributeValue(2) - value, 2);
         }
         rmse = Math.sqrt(rmse / test.size());
@@ -36,7 +35,7 @@ public class Main {
         double[][] z = new double[y.length][x.length];
         for (int i = 0; i < y.length; i++) {
             for (int j = 0; j < x.length; j++) {
-                z[i][j] = regression.getSupposedValue(new Instance(new String[]{"square", "flat_number", "price"}, new double[]{y[i], x[j], 0d}));
+                z[i][j] = regression.getSupposedValue(new Instance(new String[]{"square", "flat_number", "price"}, new double[]{y[i], x[j], 0}));
             }
         }
 
@@ -48,6 +47,10 @@ public class Main {
             yo[i] = instance.getAttributeValue(0);
             xo[i] = instance.getAttributeValue(1);
             zo[i] = instance.getAttributeValue(2);
+            System.out.println(String.format("real %f - res %f", zo[i], regression.getSupposedValue(instance)));
+        }
+        for (double coef : regression.getCoefficients()) {
+            System.out.println("> " + coef);
         }
 
         Plot3DBuilder builder = new Plot3DBuilder();

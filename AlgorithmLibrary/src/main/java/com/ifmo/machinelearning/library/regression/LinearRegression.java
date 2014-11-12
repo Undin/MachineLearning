@@ -64,4 +64,8 @@ public class LinearRegression implements TrainingAlgorithm {
         }
         return value;
     }
+
+    public double[] getCoefficients() {
+        return coefficients;
+    }
 }
