@@ -160,4 +160,5 @@ public class KNNSystem implements RecommenderSystem {
     private static double sqr(double a) {
         return a * a;
     }
+
 }

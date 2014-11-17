@@ -9,4 +9,5 @@ public interface RecommenderSystem {
     public void train();
 
     public int getRating(long user, long item);
+
 }
