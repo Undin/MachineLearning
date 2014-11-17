@@ -5,7 +5,10 @@ import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TByteArrayList;
 import gnu.trove.list.array.TLongArrayList;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.StringTokenizer;
 
 /**
@@ -13,7 +16,7 @@ import java.util.StringTokenizer;
  */
 public class Main {
     public static void main(String[] args) throws IOException {
-        File trainSet = new File("/Users/warrior/Programming/MachineLearning/HomeWorks/res/homework5/train.csv");
+        File trainSet = new File("./HomeWorks/res/homework5/train.csv");
         BufferedReader reader = new BufferedReader(new FileReader(trainSet));
         reader.readLine();
         String line;
@@ -38,7 +41,7 @@ public class Main {
         TLongList users = new TLongArrayList();
         TLongList items = new TLongArrayList();
         TByteList expectedRatings = new TByteArrayList();
-        File testSet = new File("/Users/warrior/Programming/MachineLearning/HomeWorks/res/homework5/validation.csv");
+        File testSet = new File("./HomeWorks/res/homework5/validation.csv");
         reader = new BufferedReader(new FileReader(testSet));
         reader.readLine();
 
