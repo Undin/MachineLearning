@@ -5,7 +5,10 @@ import gnu.trove.list.TLongList;
 import gnu.trove.list.array.TByteArrayList;
 import gnu.trove.list.array.TLongArrayList;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.StringTokenizer;
 
 /**
@@ -13,7 +16,7 @@ import java.util.StringTokenizer;
  */
 public class Test {
     public static void main(String[] args) throws IOException {
-        File trainSet = new File("/Users/warrior/Programming/MachineLearning/HomeWorks/res/homework5/train.csv");
+        File trainSet = new File("./HomeWorks/res/homework5/train.csv");
         BufferedReader reader = new BufferedReader(new FileReader(trainSet));
         reader.readLine();
         String line;
@@ -32,13 +35,13 @@ public class Test {
             int item = IdConverter.fromItemRealId(Long.parseLong(tokenizer.nextToken()));
             ratings[user][item] = Byte.parseByte(tokenizer.nextToken());
         }
-        KNNSystem recommenderSystem = new KNNSystem(ratings);
+        KNNSystem recommenderSystem = new KNNSystem(ratings, KNNSystem.DistType.AC);
         recommenderSystem.train();
 
         TLongList users = new TLongArrayList();
         TLongList items = new TLongArrayList();
         TByteList expectedRatings = new TByteArrayList();
-        File testSet = new File("/Users/warrior/Programming/MachineLearning/HomeWorks/res/homework5/validation.csv");
+        File testSet = new File("./HomeWorks/res/homework5/validation.csv");
         reader = new BufferedReader(new FileReader(testSet));
         reader.readLine();
 
@@ -51,29 +54,22 @@ public class Test {
 
         double bestRmse = 100;
         double bestK = -1;
-        KNNSystem.DistType bestType = KNNSystem.DistType.COS;
         int n = users.size();
-        recommenderSystem.setDistType(KNNSystem.DistType.AC);
-        for (int i = 2; i < 3; i++) {
-            KNNSystem.DistType type = KNNSystem.DistType.values()[i];
-            recommenderSystem.setDistType(type);
-            for (int k = 2; k < 100; k++) {
-                recommenderSystem.setK(k);
-                double rmse = 0;
-                for (int j = 0; j < n; j++) {
-                    double predictValue = recommenderSystem.getRating(users.get(j), items.get(j));
-                    int expectedValue = expectedRatings.get(j);
-                    rmse += (expectedValue - predictValue) * (expectedValue - predictValue);
-                }
-                rmse = Math.sqrt(rmse / n);
-                System.out.println("rmse: " + rmse + ", type: " + type + ", k: " + k);
-                if (rmse < bestRmse) {
-                    bestRmse = rmse;
-                    bestK = k;
-                    bestType = type;
-                }
+        for (int k = 2; k < 100; k++) {
+            recommenderSystem.setK(k);
+            double rmse = 0;
+            for (int j = 0; j < n; j++) {
+                double predictValue = recommenderSystem.getRating(users.get(j), items.get(j));
+                int expectedValue = expectedRatings.get(j);
+                rmse += (expectedValue - predictValue) * (expectedValue - predictValue);
+            }
+            rmse = Math.sqrt(rmse / n);
+            System.out.println("rmse: " + rmse + ", k: " + k);
+            if (rmse < bestRmse) {
+                bestRmse = rmse;
+                bestK = k;
             }
         }
-        System.out.println("bestRmse: " + bestRmse + ", bestType: " + bestType + ", k: " + bestK);
+        System.out.println("bestRmse: " + bestRmse + ", k: " + bestK);
     }
 }

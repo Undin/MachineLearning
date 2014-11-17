@@ -13,47 +13,36 @@ public class KNNSystem implements RecommenderSystem {
         AC
     }
 
-
     private static final int DEFAULT_K = 5;
-    private static final DistType DEFAULT_DIST_TYPE = DistType.COS;
 
     private final byte[][] ratings;
+    private final DistType distType;
+
     private final int userNumber;
     private final int itemNumber;
 
     private final double[] averageItemRatings;
     private final double[] averageUserRatings;
-    private final double[][] cosDistances;
-    private final double[] cosSum;
-    private final double[][] pcDistances;
-    private final double[] pcSum;
-    private final double[][] acDistances;
-    private final double[] acSum;
+    private final double[][] distances;
+    private final double[] sums;
 
     private double averageItemsRating;
 
     private List<Integer> indexes;
-
     private int k = DEFAULT_K;
-    private DistType distType = DEFAULT_DIST_TYPE;
 
-    public KNNSystem(byte[][] ratings) {
+    public KNNSystem(byte[][] ratings, DistType type) {
         this.ratings = ratings;
+        this.distType = type;
         this.userNumber = ratings.length;
         this.itemNumber = ratings[0].length;
         this.averageItemRatings = new double[itemNumber];
         this.averageUserRatings = new double[userNumber];
-        this.cosDistances = new double[userNumber][userNumber];
-        this.cosSum = new double[userNumber];
-        this.pcDistances = new double[userNumber][userNumber];
-        this.pcSum = new double[userNumber];
-        this.acDistances = new double[userNumber][userNumber];
-        this.acSum = new double[userNumber];
+        this.distances = new double[userNumber][userNumber];
+        this.sums = new double[userNumber];
         this.indexes = new ArrayList<>(userNumber);
         for (int i = 0; i < userNumber; i++) {
-            Arrays.fill(cosDistances[i], -1);
-            Arrays.fill(pcDistances[i], -1);
-            Arrays.fill(acDistances[i], -1);
+            Arrays.fill(distances[i], -1);
         }
         for (int i = 0; i < userNumber; i++) {
             indexes.add(i);
@@ -80,9 +69,7 @@ public class KNNSystem implements RecommenderSystem {
 
         for (int u = 0; u < userNumber; u++) {
             for (int i = 0; i < itemNumber; i++) {
-                cosSum[u] += sqr(factor(u, i, DistType.COS));
-                pcSum[u] += sqr(factor(u, i, DistType.PC));
-                acSum[u] += sqr(factor(u, i, DistType.AC));
+                sums[u] += sqr(factor(u, i));
             }
         }
     }
@@ -93,10 +80,6 @@ public class KNNSystem implements RecommenderSystem {
 
     public void setK(int k) {
         this.k = k;
-    }
-
-    public void setDistType(DistType distType) {
-        this.distType = distType;
     }
 
     @Override
@@ -117,32 +100,14 @@ public class KNNSystem implements RecommenderSystem {
     }
 
     private double distance(int u, int v) {
-        double[][] distArray;
-        double[] sumArray;
-        switch (distType) {
-            case COS:
-                distArray = cosDistances;
-                sumArray = cosSum;
-                break;
-            case PC:
-                distArray = pcDistances;
-                sumArray = pcSum;
-                break;
-            case AC:
-                distArray = acDistances;
-                sumArray = acSum;
-                break;
-            default:
-                throw new IllegalStateException();
-        }
-        if (distArray[u][v] < 0) {
+        if (distances[u][v] < 0) {
             double sum = 0;
             for (int i = 0; i < itemNumber; i++) {
                 sum += factor(u, i) * factor(v, i);
             }
-            distArray[u][v] = distArray[v][u] = sum / (Math.sqrt(sumArray[u]) * Math.sqrt(sumArray[v]));
+            distances[u][v] = distances[v][u] = sum / (Math.sqrt(sums[u]) * Math.sqrt(sums[v]));
         }
-        return distArray[u][v];
+        return distances[u][v];
     }
 
     private double factor(int u, int i) {
