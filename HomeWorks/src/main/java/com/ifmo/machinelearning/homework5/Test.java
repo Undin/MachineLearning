@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 /**
  * Created by warrior on 16.11.14.
  */
-public class Main {
+public class Test {
     public static void main(String[] args) throws IOException {
         File trainSet = new File("/Users/warrior/Programming/MachineLearning/HomeWorks/res/homework5/train.csv");
         BufferedReader reader = new BufferedReader(new FileReader(trainSet));
@@ -54,7 +54,7 @@ public class Main {
         KNNSystem.DistType bestType = KNNSystem.DistType.COS;
         int n = users.size();
         recommenderSystem.setDistType(KNNSystem.DistType.AC);
-        for (int i = 0; i < 3; i++) {
+        for (int i = 2; i < 3; i++) {
             KNNSystem.DistType type = KNNSystem.DistType.values()[i];
             recommenderSystem.setDistType(type);
             for (int k = 2; k < 100; k++) {
