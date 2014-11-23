@@ -35,8 +35,8 @@ public class Test {
             int item = IdConverter.fromItemRealId(Long.parseLong(tokenizer.nextToken()));
             ratings[user][item] = Byte.parseByte(tokenizer.nextToken());
         }
-        KNNSystem recommenderSystem = new KNNSystem(ratings, KNNSystem.DistType.AC);
-        recommenderSystem.train();
+//        KNNSystem recommenderSystem = new KNNSystem(ratings, KNNSystem.DistType.AC);
+//        recommenderSystem.train();
 
         TLongList users = new TLongArrayList();
         TLongList items = new TLongArrayList();
@@ -55,8 +55,11 @@ public class Test {
         double bestRmse = 100;
         double bestK = -1;
         int n = users.size();
-        for (int k = 2; k < 100; k++) {
-            recommenderSystem.setK(k);
+        for (int k = 10; k < 50; k++) {
+            BaselinePredictors recommenderSystem = new BaselinePredictors(ratings, k);
+            recommenderSystem.setGamma(0.005);
+            recommenderSystem.setLambda(0.02);
+            recommenderSystem.train();
             double rmse = 0;
             for (int j = 0; j < n; j++) {
                 double predictValue = recommenderSystem.getRating(users.get(j), items.get(j));
