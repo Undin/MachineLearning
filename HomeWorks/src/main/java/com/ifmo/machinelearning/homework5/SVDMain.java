@@ -8,9 +8,9 @@ import java.util.StringTokenizer;
  */
 public class SVDMain {
 
-    private static final double GAMMA = 0.005;
-    private static final double LAMBDA = 0.02;
-    private static final int SIZE = 2;
+    private static final double GAMMA = 0.01;
+    private static final double LAMBDA = 0.01;
+    private static final int SIZE = 10;
 
     public static void main(String[] args) throws IOException {
         File[] files = new File[]{new File("./HomeWorks/res/homework5/train.csv"), new File("./HomeWorks/res/homework5/validation.csv")};

@@ -29,28 +29,32 @@ public class SVDTest {
     private static byte[][] ratings;
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        File trainSet = new File("./HomeWorks/res/homework5/train.csv");
-        BufferedReader reader = new BufferedReader(new FileReader(trainSet));
-        reader.readLine();
+        File[] files = new File[]{new File("./HomeWorks/res/homework5/train.csv"), new File("./HomeWorks/res/homework5/validation.csv")};
         String line;
-        while ((line = reader.readLine()) != null) {
-            StringTokenizer tokenizer = new StringTokenizer(line, ",");
-            IdConverter.fromUserRealId(Long.parseLong(tokenizer.nextToken()));
-            IdConverter.fromItemRealId(Long.parseLong(tokenizer.nextToken()));
+        for (File file : files) {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            reader.readLine();
+            while ((line = reader.readLine()) != null) {
+                StringTokenizer tokenizer = new StringTokenizer(line, ",");
+                IdConverter.fromUserRealId(Long.parseLong(tokenizer.nextToken()));
+                IdConverter.fromItemRealId(Long.parseLong(tokenizer.nextToken()));
+            }
+            reader.close();
         }
-        reader.close();
-        reader = new BufferedReader(new FileReader(trainSet));
-        reader.readLine();
         ratings = new byte[IdConverter.userNumber()][IdConverter.itemNumber()];
-        while ((line = reader.readLine()) != null) {
-            StringTokenizer tokenizer = new StringTokenizer(line, ",");
-            int user = IdConverter.fromUserRealId(Long.parseLong(tokenizer.nextToken()));
-            int item = IdConverter.fromItemRealId(Long.parseLong(tokenizer.nextToken()));
-            ratings[user][item] = Byte.parseByte(tokenizer.nextToken());
+        for (File file : files) {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            reader.readLine();
+            while ((line = reader.readLine()) != null) {
+                StringTokenizer tokenizer = new StringTokenizer(line, ",");
+                int user = IdConverter.fromUserRealId(Long.parseLong(tokenizer.nextToken()));
+                int item = IdConverter.fromItemRealId(Long.parseLong(tokenizer.nextToken()));
+                ratings[user][item] = Byte.parseByte(tokenizer.nextToken());
+            }
         }
 
         File testSet = new File("./HomeWorks/res/homework5/validation.csv");
-        reader = new BufferedReader(new FileReader(testSet));
+        BufferedReader reader = new BufferedReader(new FileReader(testSet));
         reader.readLine();
 
         while ((line = reader.readLine()) != null) {
@@ -60,11 +64,11 @@ public class SVDTest {
             expectedRatings.add(Byte.parseByte(tokenizer.nextToken()));
         }
 
-        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        CountDownLatch latch = new CountDownLatch(1000);
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() - 1);
+        CountDownLatch latch = new CountDownLatch(500);
         for (int i = 1; i < 11; i++) {
             for (int j = 1; j < 11; j++) {
-                for (int k = 1; k < 11; k++) {
+                for (int k = 1; k < 6; k++) {
                     executor.submit(new Task(latch, 0.001 * i, 0.01 * j, k));
                 }
             }
@@ -117,18 +121,11 @@ public class SVDTest {
             rmse = Math.sqrt(rmse / n);
 
             synchronized (results) {
-                results.add(new Result(rmse, gamma, lambda, size));
+                Result result = new Result(rmse, gamma, lambda, size);
+                System.out.println(result);
+                results.add(result);
             }
             latch.countDown();
-        }
-
-        @Override
-        public String toString() {
-            return "Task{" +
-                    ", gamma=" + gamma +
-                    ", lambda=" + lambda +
-                    ", size=" + size +
-                    '}';
         }
     }
 
@@ -143,6 +140,16 @@ public class SVDTest {
             this.gamma = gamma;
             this.lambda = lambda;
             this.size = size;
+        }
+
+        @Override
+        public String toString() {
+            return "Result{" +
+                    "rmse=" + rmse +
+                    ", gamma=" + gamma +
+                    ", lambda=" + lambda +
+                    ", size=" + size +
+                    '}';
         }
     }
 }

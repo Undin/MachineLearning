@@ -36,14 +36,9 @@ public class KNNMain {
             }
         }
 
-        SVDSystem recommenderSystem = new SVDSystem(ratings, 10);
-        recommenderSystem.setGamma(0.005);
-        recommenderSystem.setLambda(0.02);
-        recommenderSystem.train();
-
-        /*KNNSystem recommenderSystem = new KNNSystem(ratings, TYPE);
+        KNNSystem recommenderSystem = new KNNSystem(ratings, TYPE);
         recommenderSystem.setK(K);
-        recommenderSystem.train();*/
+        recommenderSystem.train();
 
         File testSet = new File("./HomeWorks/res/homework5/test-ids.csv");
         File output = new File("./HomeWorks/res/homework5/knn-" + TYPE + "-" + K + ".csv");
