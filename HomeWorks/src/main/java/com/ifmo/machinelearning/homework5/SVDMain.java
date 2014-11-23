@@ -4,12 +4,13 @@ import java.io.*;
 import java.util.StringTokenizer;
 
 /**
- * Created by warrior on 17.11.14.
+ * Created by warrior on 24.11.14.
  */
-public class Main {
+public class SVDMain {
 
-    private static final int K = 85;
-    private static final KNNSystem.DistType TYPE = KNNSystem.DistType.AC;
+    private static final double GAMMA = 0.005;
+    private static final double LAMBDA = 0.02;
+    private static final int SIZE = 2;
 
     public static void main(String[] args) throws IOException {
         File[] files = new File[]{new File("./HomeWorks/res/homework5/train.csv"), new File("./HomeWorks/res/homework5/validation.csv")};
@@ -36,17 +37,13 @@ public class Main {
             }
         }
 
-        BaselinePredictors recommenderSystem = new BaselinePredictors(ratings, 10);
-        recommenderSystem.setGamma(0.005);
-        recommenderSystem.setLambda(0.02);
+        SVDSystem recommenderSystem = new SVDSystem(ratings, SIZE);
+        recommenderSystem.setGamma(GAMMA);
+        recommenderSystem.setLambda(LAMBDA);
         recommenderSystem.train();
 
-        /*KNNSystem recommenderSystem = new KNNSystem(ratings, TYPE);
-        recommenderSystem.setK(K);
-        recommenderSystem.train();*/
-
         File testSet = new File("./HomeWorks/res/homework5/test-ids.csv");
-        File output = new File("./HomeWorks/res/homework5/knn-" + TYPE + "-" + K + ".csv");
+        File output = new File("./HomeWorks/res/homework5/svd-" + SIZE + "-" + GAMMA + "-" + LAMBDA + ".csv");
         try (BufferedReader reader = new BufferedReader(new FileReader(testSet));
              PrintWriter writer = new PrintWriter(output)) {
             writer.println("id,rating");

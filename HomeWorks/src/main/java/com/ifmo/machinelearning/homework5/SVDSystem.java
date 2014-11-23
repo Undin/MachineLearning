@@ -1,14 +1,12 @@
 package com.ifmo.machinelearning.homework5;
 
-import java.util.Arrays;
-
 import static java.lang.Math.pow;
 import static java.lang.Math.random;
 
 /**
  * Created by Whiplash on 18.11.2014.
  */
-public class BaselinePredictors implements RecommenderSystem {
+public class SVDSystem implements RecommenderSystem {
 
     private final int users;
     private final int items;
@@ -19,13 +17,13 @@ public class BaselinePredictors implements RecommenderSystem {
 
     private double[] userB;
     private double[] itemB;
-    private byte[][] ratings;
+    private byte[][] ratings; // users x items
 
-    private double[][] p;
-    private double[][] q;
+    private double[][] p; // users x size
+    private double[][] q; // items x size
     private int size;
 
-    public BaselinePredictors(byte[][] ratings, int size) {
+    public SVDSystem(byte[][] ratings, int size) {
         this.ratings = ratings;
         this.size = size;
         users = ratings.length;
@@ -67,10 +65,9 @@ public class BaselinePredictors implements RecommenderSystem {
         }
         mu /= items;
 
-        Arrays.setAll(itemB, this::initItem);
-        Arrays.setAll(userB, this::initUser);
+//        Arrays.setAll(itemB, this::initItem);
+//        Arrays.setAll(userB, this::initUser);
 
-        int k = 0;
         double prev = 0;
         while (true) {
             for (int i = 0; i < users; i++) {
@@ -80,31 +77,34 @@ public class BaselinePredictors implements RecommenderSystem {
                     }
                 }
             }
-            k++;
-
-            double res = getFunction();
-            System.out.println("iter " + k + ": " + res);
-            if (Math.abs(res - prev) < 1e2) {
-                System.out.println("STOP TRAINING");
+            double errorValue = evaluate();
+            if (Math.abs(errorValue - prev) < 100) {
                 return;
             }
-            prev = res;
+            prev = errorValue;
         }
     }
 
-    public double getFunction() {
-        double res = 0;
+    public double evaluate() {
+        double error = 0;
         for (int i = 0; i < users; i++) {
             for (int j = 0; j < items; j++) {
                 if (ratings[i][j] != 0) {
-                    res += pow(getE(i, j) - getPQ(i, j), 2) + lambda * (pow(itemB[j], 2) + pow(userB[i], 2) + getSqrNorm(q[j]) + getSqrNorm(p[i]));
+                    error += pow(getE(i, j), 2);
                 }
             }
         }
-        return res;
+        for (double[] w : p) {
+            error += lambda * getSqrNorm(w);
+        }
+        for (double[] w : q) {
+            error += lambda * getSqrNorm(w);
+        }
+        error += lambda * (getSqrNorm(itemB) + getSqrNorm(userB));
+        return error;
     }
 
-    private double getSqrNorm(double[] vec) {
+    private static double getSqrNorm(double[] vec) {
         double res = 0;
         for (double i : vec) {
             res += pow(i, 2);
@@ -137,11 +137,12 @@ public class BaselinePredictors implements RecommenderSystem {
     }
 
     private void iter(int userId, int itemId) {
-        userB[userId] = userB[userId] + gamma * (getE(userId, itemId) - lambda * userB[userId]);
-        itemB[itemId] = itemB[itemId] + gamma * (getE(userId, itemId) - lambda * itemB[itemId]);
+        double eui = getE(userId, itemId);
+        userB[userId] = userB[userId] + gamma * (eui - lambda * userB[userId]);
+        itemB[itemId] = itemB[itemId] + gamma * (eui - lambda * itemB[itemId]);
         for (int i = 0; i < size; i++) {
-            q[itemId][i] = q[itemId][i] + gamma * (getE(userId, itemId) * p[userId][i] - lambda * q[itemId][i]);
-            p[userId][i] = p[userId][i] + gamma * (getE(userId, itemId) * q[itemId][i] - lambda * p[userId][i]);
+            p[userId][i] = p[userId][i] + gamma * (eui * q[itemId][i] - lambda * p[userId][i]);
+            q[itemId][i] = q[itemId][i] + gamma * (eui * p[userId][i] - lambda * q[itemId][i]);
         }
     }
 
@@ -156,7 +157,7 @@ public class BaselinePredictors implements RecommenderSystem {
     }
 
     private double getE(int userId, int itemId) {
-        return ratings[userId][itemId] - mu - userB[userId] - itemB[itemId];
+        return ratings[userId][itemId] - mu - userB[userId] - itemB[itemId] - getPQ(userId, itemId);
     }
 
     @Override
