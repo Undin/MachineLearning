@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by warrior on 13.11.14.
+ * Created by warrior on 13.11.14
  */
 public class Main {
 
@@ -21,14 +21,15 @@ public class Main {
         List<Instance> test = instances.subList((int) (size * 0.8), size);
 
         LinearRegression regression = new LinearRegression(train, 2);
+        regression.setPenalty(1);
         regression.train();
         double rmse = 0;
         for (Instance instance : test) {
             double value = regression.getSupposedValue(instance);
+            System.out.println(String.format("real %f - res %f", instance.getAttributeValue(2), value));
             rmse += Math.pow(instance.getAttributeValue(2) - value, 2);
         }
         rmse = Math.sqrt(rmse / test.size());
-        System.out.println("RMSE " + rmse);
 
         double[] x = {1, 5};
         double[] y = {800, 4600};
@@ -47,15 +48,16 @@ public class Main {
             yo[i] = instance.getAttributeValue(0);
             xo[i] = instance.getAttributeValue(1);
             zo[i] = instance.getAttributeValue(2);
-            System.out.println(String.format("real %f - res %f", zo[i], regression.getSupposedValue(instance)));
         }
         for (double coef : regression.getCoefficients()) {
             System.out.println("> " + coef);
         }
 
+        System.out.println("RMSE " + rmse);
+
         Plot3DBuilder builder = new Plot3DBuilder();
         builder.addGridPlot("regression", x, y, z);
-        builder.addScatterPlot("test", xo, yo, zo);
+        builder.addScatterPlot("sample", xo, yo, zo);
         builder.show();
     }
 }
