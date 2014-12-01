@@ -42,6 +42,16 @@ public class Visualization extends Drawing {
         return 30;
     }
 
+    @Override
+    protected int getHeight() {
+        return 800;
+    }
+
+    @Override
+    protected int getWidth() {
+        return 800;
+    }
+
     public static void main(String[] args) {
         launch(args);
     }

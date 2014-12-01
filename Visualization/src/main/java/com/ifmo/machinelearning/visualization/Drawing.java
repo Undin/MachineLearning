@@ -17,19 +17,19 @@ import java.util.List;
  */
 public abstract class Drawing extends Application {
 
-    private static final int LINE_WIDTH = 4;
-    private static final int WIDTH = 800;
-    private static final int HEIGHT = 800;
+    protected final int width = getWidth();
+    protected final int height = getHeight();
 
-    private double scale;
-    private Canvas canvas;
+    protected Canvas canvas;
+    protected double scale;
+    protected int lineWidth = 4;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle(getTitle());
         primaryStage.setResizable(false);
         Group root = new Group();
-        canvas = new Canvas(WIDTH, HEIGHT);
+        canvas = new Canvas(width, height);
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
         scale = getScale();
@@ -43,31 +43,39 @@ public abstract class Drawing extends Application {
 
     protected abstract double getScale();
 
+    protected abstract int getHeight();
+
+    protected abstract int getWidth();
+
+    public void setLineWidth(int width) {
+        lineWidth = width;
+    }
+
     public void drawAxis() {
         GraphicsContext context = canvas.getGraphicsContext2D();
         context.setStroke(Color.BLACK);
         context.setLineWidth(1);
-        context.strokeLine(0, WIDTH / 2, HEIGHT, WIDTH / 2);
-        context.strokeLine(HEIGHT / 2, 0, HEIGHT / 2, WIDTH);
+        context.strokeLine(0, width / 2, height, width / 2);
+        context.strokeLine(height / 2, 0, height / 2, width);
     }
 
     public void drawLine(double k, double b) {
         GraphicsContext context = canvas.getGraphicsContext2D();
         context.setStroke(Color.BLACK);
         context.setLineWidth(2);
-        context.strokeLine(0, -((double) -(WIDTH / 2) / scale * k + b) * scale + HEIGHT / 2, WIDTH, -((double) (WIDTH / 2) / scale * k + b) * scale + HEIGHT / 2);
+        context.strokeLine(0, -((double) -(width / 2) / scale * k + b) * scale + height / 2, width, -((double) (width / 2) / scale * k + b) * scale + height / 2);
     }
 
     public void drawValues(List<ClassifiedInstance> sample) {
         GraphicsContext context = canvas.getGraphicsContext2D();
         context.setFill(Color.RED);
         context.setStroke(Color.BLUE);
-        context.setLineWidth(LINE_WIDTH);
+        context.setLineWidth(lineWidth);
         for (ClassifiedInstance point : sample) {
             if (point.getClassId() == 1) {
-                context.fillOval(point.getAttributeValue(0) * scale + WIDTH / 2, -point.getAttributeValue(1) * scale + HEIGHT / 2, LINE_WIDTH + 1, LINE_WIDTH + 1);
+                context.fillOval(point.getAttributeValue(0) * scale + width / 2, -point.getAttributeValue(1) * scale + height / 2, lineWidth + 1, lineWidth + 1);
             } else {
-                context.strokeOval(point.getAttributeValue(0) * scale + WIDTH / 2, -point.getAttributeValue(1) * scale + HEIGHT / 2, 1, 1);
+                context.strokeOval(point.getAttributeValue(0) * scale + width / 2, -point.getAttributeValue(1) * scale + height / 2, 1, 1);
             }
         }
     }
@@ -76,13 +84,13 @@ public abstract class Drawing extends Application {
         GraphicsContext context = canvas.getGraphicsContext2D();
         context.setFill(Color.BURLYWOOD);
         context.setStroke(Color.WHITE);
-        context.setLineWidth(LINE_WIDTH);
+        context.setLineWidth(lineWidth);
         for (double x = -1.5; x < 1.5; x += 0.01) {
             for (double y = -1.5; y < 1.5; y += 0.01) {
                 if (classifier.getSupposedClassId(new ClassifiedInstance(attributeNames, new double[]{x, y}, 2)) == 1) {
-                    context.fillOval(x * scale + WIDTH / 2, -y * scale + HEIGHT / 2, LINE_WIDTH + 1, LINE_WIDTH + 1);
+                    context.fillOval(x * scale + width / 2, -y * scale + height / 2, lineWidth + 1, lineWidth + 1);
                 } else {
-                    context.strokeOval(x * scale + WIDTH / 2, -y * scale + HEIGHT / 2, 1, 1);
+                    context.strokeOval(x * scale + width / 2, -y * scale + height / 2, 1, 1);
                 }
             }
         }
