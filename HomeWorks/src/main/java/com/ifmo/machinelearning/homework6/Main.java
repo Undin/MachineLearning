@@ -1,5 +1,8 @@
 package com.ifmo.machinelearning.homework6;
 
+import com.ifmo.machinelearning.library.classifiers.AbstractInstanceClassifier;
+import com.ifmo.machinelearning.library.classifiers.trees.DecisionTree;
+import com.ifmo.machinelearning.library.classifiers.trees.IGain;
 import com.ifmo.machinelearning.library.core.ClassifiedInstance;
 import com.ifmo.machinelearning.library.core.InstanceCreator;
 
@@ -12,9 +15,19 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        List<ClassifiedInstance> sample = InstanceCreator.classifiedInstancesFromFile("./HomeWorks/res/homework6/train");
-        for (ClassifiedInstance instance : sample) {
-            System.out.println(instance.getClassId());
+        List<ClassifiedInstance> train = InstanceCreator.classifiedInstancesFromFile("HomeWorks/res/homework6/train");
+        List<ClassifiedInstance> test = InstanceCreator.classifiedInstancesFromFile("HomeWorks/res/homework6/valid");
+
+        for (int i = 3; i < 4; i++) {
+            int count = 0;
+            AbstractInstanceClassifier classifier = new DecisionTree(train, IGain.getInstance(), i);
+            classifier.train();
+            for (ClassifiedInstance instance : test) {
+                if (instance.getClassId() != classifier.getSupposedClassId(instance)) {
+                    count++;
+                }
+            }
+            System.out.println(String.format("I: %d, Error: %d", i, count));
         }
     }
 

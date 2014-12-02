@@ -26,6 +26,10 @@ public class Tree {
         this.child = child;
     }
 
+    public int getClassId() {
+        return classId;
+    }
+
     public int size() {
         return child.size();
     }

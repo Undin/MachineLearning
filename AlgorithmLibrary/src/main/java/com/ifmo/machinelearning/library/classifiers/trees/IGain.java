@@ -34,6 +34,9 @@ public class IGain implements QualityCriterion {
     }
 
     private double information(List<ClassifiedInstance> instances) {
+        if (instances.isEmpty()) {
+            return -1;
+        }
         Map<Integer, Double> p = new HashMap<>(instances.get(0).getClassNumber());
         for (ClassifiedInstance instance : instances) {
             int id = instance.getClassId();
