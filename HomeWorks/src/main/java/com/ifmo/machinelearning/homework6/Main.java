@@ -4,14 +4,8 @@ import com.ifmo.machinelearning.library.core.ClassifiedInstance;
 import com.ifmo.machinelearning.library.core.InstanceCreator;
 import com.ifmo.machinelearning.library.test.Statistics;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Created by Whiplash on 01.12.2014.
@@ -25,7 +19,8 @@ public class Main {
         DecisionTreeTestMachine testMachine = new DecisionTreeTestMachine(train);
         for (int i = 1; i < 20; i++) {
             testMachine.setSize(i);
-            Statistics statistics = testMachine.test(test);
+//            Statistics statistics = testMachine.test(test);
+            Statistics statistics = testMachine.crossValidationTest(5, 1);
             System.out.println(statistics.getFMeasure());
         }
 

@@ -3,14 +3,7 @@ package com.ifmo.machinelearning.library.classifiers.trees;
 import com.ifmo.machinelearning.library.classifiers.AbstractInstanceClassifier;
 import com.ifmo.machinelearning.library.core.ClassifiedInstance;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -43,13 +36,18 @@ public class DecisionTree extends AbstractInstanceClassifier {
         if (isLeaf || sample.size() <= stopSize) {
             return new Tree(getMostPopularClassId(sample));
         }
+        return splitSample(sample);
+    }
 
+    private Tree splitSample(List<ClassifiedInstance> sample) {
         int attributeNumber = sample.get(0).getAttributeNumber();
         double bestQuality = -1;
         Function<ClassifiedInstance, Integer> bestFunction = null;
         for (int i = 0; i < attributeNumber; i++) {
             int attribute = i;
-            Set<ClassifiedInstance> set = new
+            Set<Double> set = sample.stream().map(instance -> instance.getAttributeValue(attribute)).collect(Collectors.toSet());
+            List<Double> values = new ArrayList<>(set);
+            Collections.sort(values);
             for (int j = 0; j < values.size() - 1; j++) {
                 double value = (values.get(j + 1) - values.get(j)) / 2;
                 Function<ClassifiedInstance, Integer> function = instance -> instance.getAttributeValue(attribute) > value ? 1 : 0;
@@ -62,7 +60,6 @@ public class DecisionTree extends AbstractInstanceClassifier {
         }
         List<List<ClassifiedInstance>> lists = splitInstances(bestFunction, sample);
         List<Tree> child = lists.stream().map(this::buildTree).collect(Collectors.toList());
-
         return new Tree(bestFunction, child);
     }
 
