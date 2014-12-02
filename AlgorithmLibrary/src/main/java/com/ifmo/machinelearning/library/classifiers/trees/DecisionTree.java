@@ -3,7 +3,14 @@ package com.ifmo.machinelearning.library.classifiers.trees;
 import com.ifmo.machinelearning.library.classifiers.AbstractInstanceClassifier;
 import com.ifmo.machinelearning.library.core.ClassifiedInstance;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -25,8 +32,6 @@ public class DecisionTree extends AbstractInstanceClassifier {
     @Override
     protected void trainInternal() {
         root = buildTree(getData());
-        int i = 1;
-        i++;
     }
 
     private Tree buildTree(List<ClassifiedInstance> sample) {
@@ -44,8 +49,9 @@ public class DecisionTree extends AbstractInstanceClassifier {
         Function<ClassifiedInstance, Integer> bestFunction = null;
         for (int i = 0; i < attributeNumber; i++) {
             int attribute = i;
-            Set<Double> set = sample.stream().map(instance -> instance.getAttributeValue(attribute)).collect(Collectors.toSet());
-            for (Double value : set) {
+            Set<ClassifiedInstance> set = new
+            for (int j = 0; j < values.size() - 1; j++) {
+                double value = (values.get(j + 1) - values.get(j)) / 2;
                 Function<ClassifiedInstance, Integer> function = instance -> instance.getAttributeValue(attribute) > value ? 1 : 0;
                 double quality = criterion.getValue(splitInstances(function, sample));
                 if (bestQuality < quality) {

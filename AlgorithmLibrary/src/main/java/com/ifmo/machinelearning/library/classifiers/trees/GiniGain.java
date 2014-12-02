@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Created by Whiplash on 02.12.2014.
  */
-public class IGain implements QualityCriterion {
+public class GiniGain implements QualityCriterion {
 
     @Override
     public double getValue(List<List<ClassifiedInstance>> instances) {
@@ -33,11 +33,11 @@ public class IGain implements QualityCriterion {
             p.put(id, p.getOrDefault(id, 0.) + 1);
         }
         int size = instances.size();
-        double res = 0.;
+        double res = 1;
         for (Integer id : p.keySet()) {
             double pValue = p.get(id) / size;
-            res += Math.log(pValue) * pValue;
+            res -= Math.pow(pValue, 2);
         }
-        return -res;
+        return res;
     }
 }

@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Created by Whiplash on 02.12.2014.
  */
-public class IGain implements QualityCriterion {
+public class GainRatio implements QualityCriterion {
 
     @Override
     public double getValue(List<List<ClassifiedInstance>> instances) {
@@ -20,7 +20,7 @@ public class IGain implements QualityCriterion {
         for (List<ClassifiedInstance> list : instances) {
             info -= (((double) list.size()) / all.size()) * information(list);
         }
-        return info;
+        return info / information(all);
     }
 
     private double information(List<ClassifiedInstance> instances) {

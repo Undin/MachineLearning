@@ -1,13 +1,17 @@
 package com.ifmo.machinelearning.homework6;
 
-import com.ifmo.machinelearning.library.classifiers.AbstractInstanceClassifier;
-import com.ifmo.machinelearning.library.classifiers.trees.DecisionTree;
-import com.ifmo.machinelearning.library.classifiers.trees.IGain;
 import com.ifmo.machinelearning.library.core.ClassifiedInstance;
 import com.ifmo.machinelearning.library.core.InstanceCreator;
+import com.ifmo.machinelearning.library.test.Statistics;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * Created by Whiplash on 01.12.2014.
@@ -18,22 +22,15 @@ public class Main {
         List<ClassifiedInstance> train = InstanceCreator.classifiedInstancesFromFile("HomeWorks/res/homework6/train");
         List<ClassifiedInstance> test = InstanceCreator.classifiedInstancesFromFile("HomeWorks/res/homework6/valid");
 
-        for (int i = 3; i < 4; i++) {
-            int count = 0;
-            AbstractInstanceClassifier classifier = new DecisionTree(train, IGain.getInstance(), i);
-            classifier.train();
-            for (ClassifiedInstance instance : test) {
-                if (instance.getClassId() != classifier.getSupposedClassId(instance)) {
-                    count++;
-                }
-            }
-            System.out.println(String.format("I: %d, Error: %d", i, count));
+        DecisionTreeTestMachine testMachine = new DecisionTreeTestMachine(train);
+        for (int i = 1; i < 20; i++) {
+            testMachine.setSize(i);
+            Statistics statistics = testMachine.test(test);
+            System.out.println(statistics.getFMeasure());
         }
-    }
 
-    /*
-    File fileData = new File("HomeWorks/res/homework6/arcene_valid.data");
-        File fileLabels = new File("HomeWorks/res/homework6/arcene_valid.labels");
+        /*File fileData = new File("HomeWorks/res/homework6/arcene_train.data");
+        File fileLabels = new File("HomeWorks/res/homework6/arcene_train.labels");
         BufferedReader bf = new BufferedReader(new FileReader(fileData));
         String str;
         List<List<Integer>> datas = new ArrayList<>();
@@ -47,7 +44,7 @@ public class Main {
         }
         bf.close();
 
-        PrintWriter pw = new PrintWriter("HomeWorks/res/homework6/valid");
+        PrintWriter pw = new PrintWriter("HomeWorks/res/homework6/train");
         for (int i = 0; i < datas.get(0).size(); i++) {
             pw.println(String.format("@attr attr%d", i));
         }
@@ -59,10 +56,16 @@ public class Main {
             for (Integer val : list) {
                 pw.print(val + " ");
             }
-            pw.println(bf.readLine());
+            int classId = Integer.parseInt(bf.readLine());
+            if (classId == -1) {
+                classId = 0;
+            }
+            pw.println(classId);
         }
         bf.close();
-        pw.close();
-     */
+        pw.close();*/
+
+    }
+
 
 }
