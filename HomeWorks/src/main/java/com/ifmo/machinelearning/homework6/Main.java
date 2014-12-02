@@ -1,6 +1,10 @@
 package com.ifmo.machinelearning.homework6;
 
+import com.ifmo.machinelearning.library.core.ClassifiedInstance;
+import com.ifmo.machinelearning.library.core.InstanceCreator;
+
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by Whiplash on 01.12.2014.
@@ -8,7 +12,10 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-
+        List<ClassifiedInstance> sample = InstanceCreator.classifiedInstancesFromFile("./HomeWorks/res/homework6/train");
+        for (ClassifiedInstance instance : sample) {
+            System.out.println(instance.getClassId());
+        }
     }
 
     /*
