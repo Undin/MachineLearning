@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -19,16 +20,16 @@ public class InstanceCreator {
     private InstanceCreator() {
     }
 
-    public static List<ClassifiedInstance> classifiedInstancesFromFile(String fileName) {
-        List<Instance> instances = instancesFromFile(fileName);
-        List<ClassifiedInstance> classifiedInstances = new ArrayList<>(instances.size());
-        for (Instance instance : instances) {
-            classifiedInstances.add((ClassifiedInstance) instance);
+    public static List<ClassifiedInstanceImpl> classifiedInstancesFromFile(String fileName) {
+        List<InstanceImpl> instances = instancesFromFile(fileName);
+        List<ClassifiedInstanceImpl> classifiedInstances = new ArrayList<>(instances.size());
+        for (InstanceImpl instance : instances) {
+            classifiedInstances.add((ClassifiedInstanceImpl) instance);
         }
         return classifiedInstances;
     }
 
-    public static List<Instance> instancesFromFile(String fileName) {
+    public static List<InstanceImpl> instancesFromFile(String fileName) {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(fileName));
@@ -41,7 +42,7 @@ public class InstanceCreator {
         int classNumber = 0;
         String[] attributeNames = null;
         List<String> attributeNameList = new ArrayList<>();
-        List<Instance> data = null;
+        List<InstanceImpl> data = null;
         try {
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
@@ -79,7 +80,7 @@ public class InstanceCreator {
         return data;
     }
 
-    private static Instance readInstance(String line, String[] attributeNames, int classNumber) {
+    private static InstanceImpl readInstance(String line, String[] attributeNames, int classNumber) {
         StringTokenizer tokenizer = new StringTokenizer(line, ",; \t");
         double[] values = new double[attributeNames.length];
         for (int i = 0; i < values.length; i++) {
@@ -87,9 +88,90 @@ public class InstanceCreator {
         }
         if (classNumber > 0) {
             int classId = Integer.parseInt(tokenizer.nextToken());
-            return new ClassifiedInstance(attributeNames, values, classNumber, classId);
+            return new ClassifiedInstanceImpl(attributeNames, values, classNumber, classId);
         } else {
-            return new Instance(attributeNames, values);
+            return new InstanceImpl(attributeNames, values);
+        }
+    }
+
+    private static class InstanceImpl implements Instance {
+
+        protected final String[] attributeNames;
+        protected final double[] attributeValues;
+
+        public InstanceImpl(String[] attributeNames, double[] attributeValues) {
+            if (attributeNames == null || attributeValues == null) {
+                throw new IllegalArgumentException("arguments must be not null");
+            }
+            if (attributeNames.length != attributeValues.length) {
+                throw new IllegalArgumentException("attributeNames.length != attributeValues.length");
+            }
+            this.attributeNames = attributeNames;
+            this.attributeValues = attributeValues;
+        }
+
+        public int getAttributeNumber() {
+            return attributeNames.length;
+        }
+
+        public String getAttributeName(int i) {
+            return attributeNames[i];
+        }
+
+        public double getAttributeValue(int i) {
+            return attributeValues[i];
+        }
+
+        public double[] getValues() {
+            double[] copyValues = new double[attributeValues.length];
+            System.arraycopy(attributeValues, 0, copyValues, 0, attributeValues.length);
+            return copyValues;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            InstanceImpl instance = (InstanceImpl) o;
+
+            if (!Arrays.equals(attributeNames, instance.attributeNames)) return false;
+            if (!Arrays.equals(attributeValues, instance.attributeValues)) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = Arrays.hashCode(attributeNames);
+            result = 31 * result + Arrays.hashCode(attributeValues);
+            return result;
+        }
+    }
+
+    private static class ClassifiedInstanceImpl extends InstanceImpl implements ClassifiedInstance {
+
+        protected final int classId;
+        protected final int classNumber;
+
+        public ClassifiedInstanceImpl(String[] attributeNames, double[] attributeValues, int classNumber, int classId) {
+            super(attributeNames, attributeValues);
+            this.classNumber = classNumber;
+            this.classId = classId;
+        }
+
+        public ClassifiedInstanceImpl(String[] attributeNames, double[] attributeValues, int classNumber) {
+            this(attributeNames, attributeValues, classNumber, -1);
+        }
+
+        @Override
+        public int getClassId() {
+            return classId;
+        }
+
+        @Override
+        public int getClassNumber() {
+            return classNumber;
         }
     }
 }
