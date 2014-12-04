@@ -2,6 +2,7 @@ package com.ifmo.machinelearning.homework4;
 
 import com.ifmo.machinelearning.library.core.Instance;
 import com.ifmo.machinelearning.library.core.InstanceCreator;
+import com.ifmo.machinelearning.library.core.InstanceDefaultImpl;
 import com.ifmo.machinelearning.library.regression.LinearRegression;
 import com.ifmo.machinelearning.visualization.Plot3DBuilder;
 
@@ -36,7 +37,7 @@ public class Main {
         double[][] z = new double[y.length][x.length];
         for (int i = 0; i < y.length; i++) {
             for (int j = 0; j < x.length; j++) {
-                z[i][j] = regression.getSupposedValue(new Instance(new String[]{"square", "flat_number", "price"}, new double[]{y[i], x[j], 0}));
+                z[i][j] = regression.getSupposedValue(new InstanceDefaultImpl(new String[]{"square", "flat_number", "price"}, new double[]{y[i], x[j], 0}));
             }
         }
 
