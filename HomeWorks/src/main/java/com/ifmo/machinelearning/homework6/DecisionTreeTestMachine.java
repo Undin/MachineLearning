@@ -3,6 +3,7 @@ package com.ifmo.machinelearning.homework6;
 import com.ifmo.machinelearning.library.classifiers.AbstractInstanceClassifier;
 import com.ifmo.machinelearning.library.classifiers.trees.DecisionTree;
 import com.ifmo.machinelearning.library.classifiers.trees.GiniGain;
+import com.ifmo.machinelearning.library.classifiers.trees.IGain;
 import com.ifmo.machinelearning.library.core.ClassifiedInstance;
 import com.ifmo.machinelearning.library.test.TestMachine;
 
@@ -29,6 +30,6 @@ public class DecisionTreeTestMachine extends TestMachine {
 
     @Override
     protected AbstractInstanceClassifier createClassifier(List<ClassifiedInstance> dataSet) {
-        return new DecisionTree(dataSet, new GiniGain(), size);
+        return new DecisionTree(dataSet, new IGain(), size);
     }
 }

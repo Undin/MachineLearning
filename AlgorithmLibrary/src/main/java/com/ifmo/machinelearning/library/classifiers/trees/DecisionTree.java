@@ -42,20 +42,28 @@ public class DecisionTree extends AbstractInstanceClassifier {
     private Tree splitSample(List<ClassifiedInstance> sample) {
         int attributeNumber = sample.get(0).getAttributeNumber();
         double bestQuality = -1;
+        int bestAttributeTmp = 0;
         Function<ClassifiedInstance, Integer> bestFunction = null;
         for (int i = 0; i < attributeNumber; i++) {
             int attribute = i;
-            Set<Double> set = sample.stream().map(instance -> instance.getAttributeValue(attribute)).collect(Collectors.toSet());
-            List<Double> values = new ArrayList<>(set);
-            Collections.sort(values);
-            for (int j = 0; j < values.size() - 1; j++) {
-                double value = (values.get(j + 1) - values.get(j)) / 2;
-                Function<ClassifiedInstance, Integer> function = instance -> instance.getAttributeValue(attribute) > value ? 1 : 0;
-                double quality = criterion.getValue(splitInstances(function, sample));
-                if (bestQuality < quality) {
-                    bestFunction = function;
-                    bestQuality = quality;
-                }
+            double quality = criterion.getValue(splitInstances(classifiedInstance -> (int) classifiedInstance.getAttributeValue(attribute), sample));
+            if (bestQuality < quality) {
+                bestAttributeTmp = attribute;
+                bestQuality = quality;
+            }
+        }
+        int bestAttribute = bestAttributeTmp;
+        Set<Double> set = sample.stream().map(instance -> instance.getAttributeValue(bestAttribute)).collect(Collectors.toSet());
+        List<Double> values = new ArrayList<>(set);
+        Collections.sort(values);
+        bestQuality = 0;
+        for (int j = 0; j < values.size() - 1; j++) {
+            double value = (values.get(j + 1) - values.get(j)) / 2;
+            Function<ClassifiedInstance, Integer> function = instance -> instance.getAttributeValue(bestAttribute) > value ? 1 : 0;
+            double quality = criterion.getValue(splitInstances(function, sample));
+            if (bestQuality < quality) {
+                bestFunction = function;
+                bestQuality = quality;
             }
         }
         List<List<ClassifiedInstance>> lists = splitInstances(bestFunction, sample);
@@ -83,13 +91,15 @@ public class DecisionTree extends AbstractInstanceClassifier {
 
     private List<List<ClassifiedInstance>> splitInstances(Function<ClassifiedInstance, Integer> function,
                                                           List<ClassifiedInstance> sample) {
+        Map<Integer, List<ClassifiedInstance>> map = new HashMap<>();
         List<List<ClassifiedInstance>> lists = new ArrayList<>(getClassNumber());
-        for (int i = 0; i < getClassNumber(); i++) {
-            lists.add(new ArrayList<>());
-        }
         for (ClassifiedInstance instance : sample) {
-            lists.get(function.apply(instance)).add(instance);
+            Integer value = function.apply(instance);
+            List<ClassifiedInstance> list = map.getOrDefault(value, new ArrayList<>());
+            list.add(instance);
+            map.put(value, list);
         }
+        lists.addAll(map.keySet().stream().map(map::get).collect(Collectors.toList()));
         return lists;
     }
 
