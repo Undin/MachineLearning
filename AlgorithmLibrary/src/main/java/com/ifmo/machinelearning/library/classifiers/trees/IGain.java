@@ -36,7 +36,7 @@ public class IGain implements QualityCriterion {
         double res = 0.;
         for (Integer id : p.keySet()) {
             double pValue = p.get(id) / size;
-            res += Math.log(pValue) * pValue;
+            res += Math.log(pValue) / LOG2 * pValue;
         }
         return -res;
     }

@@ -21,7 +21,7 @@ public class GainRatio implements QualityCriterion {
         for (List<ClassifiedInstance> list : instances) {
             double tmp = ((double) list.size()) / all.size();
             info -= (tmp * information(list));
-            splitInfo += tmp * Math.log(tmp);
+            splitInfo += tmp * Math.log(tmp) / LOG2;
         }
         return info / (-splitInfo);
     }
@@ -39,7 +39,7 @@ public class GainRatio implements QualityCriterion {
         double res = 0.;
         for (Integer id : p.keySet()) {
             double pValue = p.get(id) / size;
-            res += Math.log(pValue) * pValue;
+            res += Math.log(pValue) / LOG2 * pValue;
         }
         return -res;
     }

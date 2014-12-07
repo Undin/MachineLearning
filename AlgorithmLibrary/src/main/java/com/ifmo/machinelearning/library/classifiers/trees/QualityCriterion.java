@@ -9,6 +9,8 @@ import java.util.List;
  */
 public interface QualityCriterion {
 
+    static final double LOG2 = Math.log(2);
+
     public double getValue(List<List<ClassifiedInstance>> instances);
 
 }
