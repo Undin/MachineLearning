@@ -2,6 +2,7 @@ package com.ifmo.machinelearning.visualization;
 
 import com.ifmo.machinelearning.library.classifiers.AbstractInstanceClassifier;
 import com.ifmo.machinelearning.library.core.ClassifiedInstance;
+import com.ifmo.machinelearning.library.core.ClassifiedInstanceDefaultImpl;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -87,7 +88,7 @@ public abstract class Drawing extends Application {
         context.setLineWidth(lineWidth);
         for (double x = -1.5; x < 1.5; x += 0.01) {
             for (double y = -1.5; y < 1.5; y += 0.01) {
-                if (classifier.getSupposedClassId(new ClassifiedInstance(attributeNames, new double[]{x, y}, 2)) == 1) {
+                if (classifier.getSupposedClassId(new ClassifiedInstanceDefaultImpl(attributeNames, new double[]{x, y}, 2)) == 1) {
                     context.fillOval(x * scale + width / 2, -y * scale + height / 2, lineWidth + 1, lineWidth + 1);
                 } else {
                     context.strokeOval(x * scale + width / 2, -y * scale + height / 2, 1, 1);

@@ -23,7 +23,7 @@ public class InstanceCreator {
         List<Instance> instances = instancesFromFile(fileName);
         List<ClassifiedInstance> classifiedInstances = new ArrayList<>(instances.size());
         for (Instance instance : instances) {
-            classifiedInstances.add((ClassifiedInstance) instance);
+            classifiedInstances.add((ClassifiedInstanceDefaultImpl) instance);
         }
         return classifiedInstances;
     }
@@ -79,7 +79,7 @@ public class InstanceCreator {
         return data;
     }
 
-    private static Instance readInstance(String line, String[] attributeNames, int classNumber) {
+    private static InstanceDefaultImpl readInstance(String line, String[] attributeNames, int classNumber) {
         StringTokenizer tokenizer = new StringTokenizer(line, ",; \t");
         double[] values = new double[attributeNames.length];
         for (int i = 0; i < values.length; i++) {
@@ -87,9 +87,9 @@ public class InstanceCreator {
         }
         if (classNumber > 0) {
             int classId = Integer.parseInt(tokenizer.nextToken());
-            return new ClassifiedInstance(attributeNames, values, classNumber, classId);
+            return new ClassifiedInstanceDefaultImpl(attributeNames, values, classNumber, classId);
         } else {
-            return new Instance(attributeNames, values);
+            return new InstanceDefaultImpl(attributeNames, values);
         }
     }
 }
