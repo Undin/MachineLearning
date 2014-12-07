@@ -12,7 +12,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.ifmo.machinelearning.homework7.Main.*;
+import static com.ifmo.machinelearning.homework7.Test.*;
 
 /**
  * Created by warrior on 06.12.14.
