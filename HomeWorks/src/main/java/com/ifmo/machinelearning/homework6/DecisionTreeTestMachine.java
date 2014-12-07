@@ -2,7 +2,6 @@ package com.ifmo.machinelearning.homework6;
 
 import com.ifmo.machinelearning.library.classifiers.AbstractInstanceClassifier;
 import com.ifmo.machinelearning.library.classifiers.trees.DecisionTree;
-import com.ifmo.machinelearning.library.classifiers.trees.GiniGain;
 import com.ifmo.machinelearning.library.classifiers.trees.IGain;
 import com.ifmo.machinelearning.library.core.ClassifiedInstance;
 import com.ifmo.machinelearning.library.test.TestMachine;

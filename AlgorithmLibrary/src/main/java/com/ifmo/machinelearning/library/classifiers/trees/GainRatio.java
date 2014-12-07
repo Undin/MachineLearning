@@ -17,10 +17,13 @@ public class GainRatio implements QualityCriterion {
         List<ClassifiedInstance> all = new ArrayList<>();
         instances.forEach(all::addAll);
         double info = information(all);
+        double splitInfo = 0;
         for (List<ClassifiedInstance> list : instances) {
-            info -= (((double) list.size()) / all.size()) * information(list);
+            double tmp = ((double) list.size()) / all.size();
+            info -= (tmp * information(list));
+            splitInfo += tmp * Math.log(tmp);
         }
-        return info / information(all);
+        return info / (-splitInfo);
     }
 
     private double information(List<ClassifiedInstance> instances) {
