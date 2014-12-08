@@ -22,6 +22,7 @@ public abstract class Drawing extends Application {
     protected final int height = getHeight();
 
     protected Canvas canvas;
+    protected Scene scene;
     protected double scale;
     protected int lineWidth = 4;
 
@@ -32,7 +33,8 @@ public abstract class Drawing extends Application {
         Group root = new Group();
         canvas = new Canvas(width, height);
         root.getChildren().add(canvas);
-        primaryStage.setScene(new Scene(root));
+        scene = new Scene(root);
+        primaryStage.setScene(scene);
         scale = getScale();
         initialize();
         primaryStage.show();

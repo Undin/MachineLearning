@@ -1,6 +1,12 @@
 package com.ifmo.machinelearning.homework7;
 
 import com.ifmo.machinelearning.visualization.DrawingNumber;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by Whiplash on 01.12.2014.
@@ -8,40 +14,41 @@ import com.ifmo.machinelearning.visualization.DrawingNumber;
 public class Visualization extends DrawingNumber {
 
     private static final int SCALE = 10;
+    private List<NumberImageInstance> test;
+    private NumberRecognitionNeuralNet net;
+    private int cur = 0;
 
     @Override
     protected void initialize() {
-        byte[][] test = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 38, 43, 105, -1, -3, -3, -3, -3, -3, -82, 6, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 43, -117, -32, -30, -4, -3, -4, -4, -4, -4, -4, -4, -98, 14, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, -78, -4, -4, -4, -4, -3, -4, -4, -4, -4, -4, -4, -4, 59, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 109, -4, -4, -26, -124, -123, -124, -124, -67, -4, -4, -4, -4, 59, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 29, 29, 24, 0, 0, 0, 0, 14, -30, -4, -4, -84, 7, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 85, -13, -4, -4, -112, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 88, -67, -4, -4, -4, 14, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 91, -44, -9, -4, -4, -4, -52, 9, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 125, -63, -63, -63, -3, -4, -4, -4, -18, 102, 28, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 45, -34, -4, -4, -4, -4, -3, -4, -4, -4, -79, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 45, -33, -3, -3, -3, -3, -1, -3, -3, -3, -3, 74, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 31, 123, 52, 44, 44, 44, 44, -113, -4, -4, 74, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, -4, -4, 74, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 86, -4, -4, 74, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 5, 75, 9, 0, 0, 0, 0, 0, 0, 98, -14, -4, -4, 74, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 61, -73, -4, 29, 0, 0, 0, 0, 18, 92, -17, -4, -4, -13, 65, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, -48, -4, -4, -109, -122, -122, -122, -122, -53, -3, -4, -4, -68, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, -48, -4, -4, -4, -4, -4, -4, -4, -4, -3, -26, -103, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 49, -99, -4, -4, -4, -4, -4, -39, -49, -110, 45, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 7, 103, -21, -4, -84, 103, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},};
-        setLineWidth(10);
-        drawNumber(test);
+        test = NumberImageInstance.createFromFiles(Test.TEST_DATA, Test.TEST_LABELS);
+        Collections.shuffle(test);
+        net = NumberRecognitionNeuralNet.fromDump("HomeWorks/res/homework7/08-12-2014_00.03.17.523_committee_0_500_0.05_0.9275.txt");
+
+        scene.setOnMouseClicked(mouseHandler);
+        scene.setOnMouseDragged(mouseHandler);
+        scene.setOnMouseEntered(mouseHandler);
+        scene.setOnMouseExited(mouseHandler);
+        scene.setOnMouseMoved(mouseHandler);
+        scene.setOnMousePressed(mouseHandler);
+        scene.setOnMouseReleased(mouseHandler);
+
+        setLineWidth(SCALE);
+        drawNumber(test.get(cur).getValues());
+        System.out.println(String.format("Real: %d vs Guess: %d", test.get(cur).getClassId(), net.getNumber(test.get(cur))));
     }
+
+    EventHandler<MouseEvent> mouseHandler = mouseEvent -> {
+        if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED) {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                cur++;
+            } else {
+                cur += test.size() - 1;
+            }
+            cur %= test.size();
+            drawNumber(test.get(cur).getValues());
+            System.out.println(String.format("Real: %d vs Guess: %d", test.get(cur).getClassId(), net.getNumber(test.get(cur))));
+        }
+    };
 
     @Override
     protected String getTitle() {
