@@ -21,7 +21,7 @@ public class Test {
     public static final String TEST_DATA = "./HomeWorks/res/homework7/t10k-images-idx3-ubyte";
     public static final String TEST_LABELS = "./HomeWorks/res/homework7/t10k-labels-idx1-ubyte";
 
-    private static final SimpleDateFormat DUMP_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy_HH:mm:ss:SSS");
+    private static final SimpleDateFormat DUMP_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy_HH.mm.ss.SSS");
 
     private static final double ALPHA = 0.05;
     private static final double EPS = 0.001;
