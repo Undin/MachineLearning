@@ -1,9 +1,11 @@
 package com.ifmo.machinelearning.homework7;
 
-import com.ifmo.machinelearning.visualization.DrawingNumber;
+import com.ifmo.machinelearning.visualization.Drawing;
 import javafx.event.EventHandler;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.List;
 /**
  * Created by Whiplash on 01.12.2014.
  */
-public class Visualization extends DrawingNumber {
+public class Visualization extends Drawing {
 
     private static final int SCALE = 10;
     private List<NumberImageInstance> test;
@@ -49,6 +51,17 @@ public class Visualization extends DrawingNumber {
             System.out.println(String.format("Real: %d vs Guess: %d", test.get(cur).getClassId(), net.getNumber(test.get(cur))));
         }
     };
+
+    private void drawNumber(double[] pixels) {
+        GraphicsContext context = canvas.getGraphicsContext2D();
+        for (int i = 0; i < 28; i++) {
+            for (int j = 0; j < 28; j++) {
+                double channel = pixels[i * 28 + j];
+                context.setFill(new Color(channel, channel, channel, 1));
+                context.fillRect(j * scale, i * scale, lineWidth, lineWidth);
+            }
+        }
+    }
 
     @Override
     protected String getTitle() {

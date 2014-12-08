@@ -14,7 +14,7 @@ import javafx.stage.Stage;
  * Created by Whiplash on 08.12.2014.
  */
 public class DrawNumber extends Application {
-    private byte[][] bitmap = new byte[28][28];
+    private double[][] bitmap = new double[28 * SCALE][28 * SCALE];
 
     private final static int SCALE = 10;
     private Canvas canvas;
@@ -45,23 +45,37 @@ public class DrawNumber extends Application {
     }
 
     EventHandler<MouseEvent> mouseHandler = mouseEvent -> {
-        int x = Math.min((int) (mouseEvent.getX() / SCALE), 27);
-        int y = Math.min((int) (mouseEvent.getY() / SCALE), 27);
+        int x = Math.min((int) (mouseEvent.getX()), 28 * SCALE - 1);
+        int y = Math.min((int) (mouseEvent.getY()), 28 * SCALE - 1);
         if (x >= 0 && y >= 0) {
             if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED) {
                 clear();
-                bitmap[x][y] = -1;
+                drawPixel(x, y);
                 draw();
             } else if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED) {
-                bitmap[x][y] = -1;
+                drawPixel(x, y);
                 draw();
             } else if (mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED) {
                 byte[] b = new byte[28 * 28];
-                for (int i = 0; i < bitmap.length; i++) {
-                    for (int j = 0; j < bitmap[0].length; j++) {
-                        b[i + j * 28] = bitmap[i][j];
+                for (int i = 0; i < 28; i++) {
+                    for (int j = 0; j < 28; j++) {
+                        double channel = 0.;
+                        for (int di = 0; di < SCALE; di++) {
+                            for (int dj = 0; dj < SCALE; dj++) {
+                                channel += bitmap[i * SCALE + di][j * SCALE + dj];
+                            }
+                        }
+                        channel /= SCALE * SCALE;
+                        b[i + j * 28] = (byte) (channel * 255);
                     }
                 }
+
+                /*for (int i = 0; i < 28; i++) {
+                    for (int j = 0; j < 28; j++) {
+                        System.out.print(b[i * 28 + j] + " ");
+                    }
+                    System.out.println();
+                }*/
                 NumberImageInstance instance = new NumberImageInstance(b, (byte) 0);
                 System.out.println(net.getNumber(instance));
             }
@@ -76,11 +90,25 @@ public class DrawNumber extends Application {
         }
     }
 
+    public void drawPixel(int x, int y) {
+        for (int i = x; i < Math.min(x + SCALE * 2, 28 * SCALE); i++) {
+            for (int j = y; j < Math.min(y + SCALE * 2, 28 * SCALE); j++) {
+                bitmap[i][j] = 1;
+            }
+        }
+    }
+
     public void draw() {
         GraphicsContext context = canvas.getGraphicsContext2D();
-        for (int i = 0; i < bitmap.length; i++) {
-            for (int j = 0; j < bitmap[0].length; j++) {
-                double channel = (bitmap[i][j] & 0xFF) / 255.;
+        for (int i = 0; i < 28; i++) {
+            for (int j = 0; j < 28; j++) {
+                double channel = 0;
+                for (int di = 0; di < SCALE; di++) {
+                    for (int dj = 0; dj < SCALE; dj++) {
+                        channel += bitmap[i * SCALE + di][j * SCALE + dj];
+                    }
+                }
+                channel /= SCALE * SCALE;
                 context.setFill(new Color(channel, channel, channel, 1));
                 context.fillRect(i * SCALE, j * SCALE, SCALE, SCALE);
             }
