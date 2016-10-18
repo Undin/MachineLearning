@@ -1,8 +1,5 @@
-apply plugin: 'java'
-
-sourceCompatibility = 1.8
-version = '1.0'
-
-repositories {
-    mavenCentral()
+allprojects {
+    repositories {
+        jcenter()
+    }
 }
