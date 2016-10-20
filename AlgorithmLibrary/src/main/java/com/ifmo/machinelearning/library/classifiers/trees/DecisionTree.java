@@ -2,6 +2,7 @@ package com.ifmo.machinelearning.library.classifiers.trees;
 
 import com.ifmo.machinelearning.library.classifiers.AbstractInstanceClassifier;
 import com.ifmo.machinelearning.library.core.ClassifiedInstance;
+import com.ifmo.machinelearning.library.core.Instance;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,29 +23,40 @@ public class DecisionTree extends AbstractInstanceClassifier {
     private int stopSize;
     private int bestErrorCount;
 
+    private boolean pruning = true;
+
     public DecisionTree(List<ClassifiedInstance> data, QualityCriterion criterion, int stopSize) {
         super(data);
         this.criterion = criterion;
         this.stopSize = stopSize;
     }
 
+    public void enablePruning(boolean enable) {
+        pruning = enable;
+    }
+
     @Override
     protected void trainInternal() {
         Collections.shuffle(getData());
-        int board = getData().size() * 2 / 3;
-        List<ClassifiedInstance> train = getData().subList(0, board);
-        List<ClassifiedInstance> control = getData().subList(board, getData().size());
-        root = buildTree(null, train);
-        bestErrorCount = checkTree(control);
-        int oldErrorCount = bestErrorCount;
-        int pruningCount = 0;
-        while (pruning(root, control)) {
-            pruningCount++;
+        if (pruning) {
+            int board = getData().size() * 2 / 3;
+            List<ClassifiedInstance> train = getData().subList(0, board);
+            List<ClassifiedInstance> control = getData().subList(board, getData().size());
+            root = buildTree(null, train);
+            bestErrorCount = checkTree(control);
+
+            int oldErrorCount = bestErrorCount;
+            int pruningCount = 0;
+            while (pruning(root, control)) {
+                pruningCount++;
+            }
+            int newErrorCount = checkTree(control);
+            System.out.println("----------------------");
+            System.out.println("Number of pruning: " + pruningCount);
+            System.out.println("Error count: " + oldErrorCount + " -> " + newErrorCount);
+        } else {
+            root = buildTree(null, getData());
         }
-        int newErrorCount = checkTree(control);
-        System.out.println("----------------------");
-        System.out.println("Number of pruning: " + pruningCount);
-        System.out.println("Error count: " + oldErrorCount + " -> " + newErrorCount);
     }
 
     private boolean pruning(Tree tree, List<ClassifiedInstance> control) {
@@ -102,17 +114,36 @@ public class DecisionTree extends AbstractInstanceClassifier {
     }
 
     private Tree buildTree(Tree parent, List<ClassifiedInstance> sample) {
-        boolean isLeaf = true;
-        int classId = sample.get(0).getClassId();
-        for (ClassifiedInstance instance : sample) {
-            isLeaf &= (classId == instance.getClassId());
+        if (sample.size() > stopSize) {
+            boolean isSameClass = true;
+            boolean isSameValues = true;
+
+            ClassifiedInstance instance = sample.get(0);
+            int classId = instance.getClassId();
+
+            for (int i = 1; i < sample.size() && (isSameClass || isSameValues); i++) {
+                ClassifiedInstance currentInstance = sample.get(i);
+                isSameClass &= (classId == currentInstance.getClassId());
+                isSameValues &= haveSameValues(instance, currentInstance);
+            }
+
+            if (!isSameClass && !isSameValues) {
+                Tree tree = splitSample(sample);
+                tree.setParent(parent);
+                return tree;
+            }
+
         }
-        if (isLeaf || sample.size() <= stopSize) {
-            return new Tree(getMostPopularClassId(sample));
+        return new Tree(getMostPopularClassId(sample));
+    }
+
+    private boolean haveSameValues(Instance first, Instance second) {
+        for (int i = 0; i < first.getAttributeNumber(); i++) {
+            if (first.getAttributeValue(i) != second.getAttributeValue(i)) {
+                return false;
+            }
         }
-        Tree tree = splitSample(sample);
-        tree.setParent(parent);
-        return tree;
+        return true;
     }
 
     private Tree splitSample(List<ClassifiedInstance> sample) {
@@ -121,7 +152,9 @@ public class DecisionTree extends AbstractInstanceClassifier {
         Function<ClassifiedInstance, Integer> bestFunction = null;
         for (int i = 0; i < attributeNumber; i++) {
             int attribute = i;
-            Set<Double> set = sample.stream().map(instance -> instance.getAttributeValue(attribute)).collect(Collectors.toSet());
+            Set<Double> set = sample.stream()
+                    .map(instance -> instance.getAttributeValue(attribute))
+                    .collect(Collectors.toSet());
             List<Double> values = new ArrayList<>(set);
             Collections.sort(values);
             for (int j = 0; j < values.size() - 1; j++) {
@@ -137,8 +170,10 @@ public class DecisionTree extends AbstractInstanceClassifier {
 
         List<List<ClassifiedInstance>> lists = splitInstances(bestFunction, sample);
         Tree tree = new Tree(bestFunction, null);
-        List<Tree> child = lists.stream().map(list -> buildTree(tree, list)).collect(Collectors.toList());
-        tree.setChild(child);
+        List<Tree> children = lists.stream()
+                .map(list -> buildTree(tree, list))
+                .collect(Collectors.toList());
+        tree.setChildren(children);
         return tree;
     }
 

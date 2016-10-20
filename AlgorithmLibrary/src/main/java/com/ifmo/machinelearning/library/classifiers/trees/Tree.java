@@ -13,7 +13,7 @@ public class Tree {
 
     public static final int NO_ENTRY_VALUE = Integer.MIN_VALUE;
 
-    private List<Tree> child = new ArrayList<>();
+    private List<Tree> children = new ArrayList<>();
     private Tree parent;
     private int classId = NO_ENTRY_VALUE;
     private Function<ClassifiedInstance, Integer> splitFunction;
@@ -22,9 +22,9 @@ public class Tree {
         this.classId = classId;
     }
 
-    public Tree(Function<ClassifiedInstance, Integer> splitFunction, List<Tree> child) {
+    public Tree(Function<ClassifiedInstance, Integer> splitFunction, List<Tree> children) {
         this.splitFunction = splitFunction;
-        this.child = child;
+        this.children = children;
     }
 
     public void setParent(Tree parent) {
@@ -35,8 +35,8 @@ public class Tree {
         return parent;
     }
 
-    public void setChild(List<Tree> child) {
-        this.child = child;
+    public void setChildren(List<Tree> children) {
+        this.children = children;
     }
 
     public int getClassId() {
@@ -44,15 +44,15 @@ public class Tree {
     }
 
     public int size() {
-        return child.size();
+        return children.size();
     }
 
     public Tree getChild(int i) {
-        return child.get(i);
+        return children.get(i);
     }
 
     public Tree setChild(int i, Tree newChild) {
-        return child.set(i, newChild);
+        return children.set(i, newChild);
     }
 
     public int eval(ClassifiedInstance instance) {
@@ -67,7 +67,7 @@ public class Tree {
         Tree tree = (Tree) o;
 
         if (classId != tree.classId) return false;
-        if (child != null ? !child.equals(tree.child) : tree.child != null) return false;
+        if (children != null ? !children.equals(tree.children) : tree.children != null) return false;
         if (parent != null ? !parent.equals(tree.parent) : tree.parent != null) return false;
         if (splitFunction != null ? !splitFunction.equals(tree.splitFunction) : tree.splitFunction != null)
             return false;
@@ -77,7 +77,7 @@ public class Tree {
 
     @Override
     public int hashCode() {
-        int result = child != null ? child.hashCode() : 0;
+        int result = children != null ? children.hashCode() : 0;
         result = 31 * result + (parent != null ? parent.hashCode() : 0);
         result = 31 * result + classId;
         result = 31 * result + (splitFunction != null ? splitFunction.hashCode() : 0);
