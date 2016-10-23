@@ -2,6 +2,7 @@ package com.ifmo.machinelearning.library.classifiers.trees
 
 import com.ifmo.machinelearning.library.classifiers.AbstractInstanceClassifier
 import com.ifmo.machinelearning.library.core.ClassifiedInstance
+import com.ifmo.machinelearning.library.core.SubspaceClassifierInstance
 import java.util.*
 import java.util.stream.IntStream
 
@@ -46,9 +47,9 @@ class RandomForest(
 
     override fun getSupposedClassId(instance: ClassifiedInstance): Int {
         val results = IntArray(classNumber)
-        forest.forEachIndexed { i, tree ->
+        for ((i, tree) in forest.withIndex()) {
             val featureSubspace = featureSubspaces[i]
-            val transformedInstance = FeatureSubspaceClassifierInstance(instance, featureSubspace)
+            val transformedInstance = SubspaceClassifierInstance(instance, featureSubspace)
             results[tree.getSupposedClassId(transformedInstance)]++
         }
         return results.withIndex().maxBy { it.value }!!.index
@@ -61,7 +62,7 @@ class RandomForest(
 
         for (i in 1..size) {
             val index = random.nextInt(size)
-            sample += FeatureSubspaceClassifierInstance(data[index], featureSubspace)
+            sample += SubspaceClassifierInstance(data[index], featureSubspace)
             indices += index
         }
         val tree = DecisionTree(sample, criterion, stopSize)
@@ -76,13 +77,62 @@ class RandomForest(
         return IntArray(featureSubspaceSize) { i -> indices[i] }
     }
 
+    fun estimateAttributes(): DoubleArray {
+        val errorRates = DoubleArray(size) { index -> calculateOOB(data[index], index) }
+        return IntStream.range(0, attributeNumber)
+                .parallel()
+                .mapToDouble { attributeIndex ->
+                    val values = data.map { it.getAttributeValue(attributeIndex) }.toMutableList()
+                    Collections.shuffle(values)
+                    val transformedInstances = data.zip(values).map { p ->
+                        val (instance, value) = p
+                        AttributeTransformClassifierInstance(instance, attributeIndex, value)
+                    }
+                    val errorDifferences = DoubleArray(size) { calculateOOB(transformedInstances[it], it) - errorRates[it] }
+                    if (isSameValues(errorDifferences)) {
+                        0.0
+                    } else {
+                        val mean = errorDifferences.average()
+                        val stdDeviations = Math.sqrt(variance(errorDifferences, mean))
+                        mean / stdDeviations
+                    }
+                }.toArray()
+    }
+
+    private fun calculateOOB(instance: ClassifiedInstance, index: Int): Double {
+        var errors = 0.0
+        var all = 0.0
+        for ((i, tree) in forest.withIndex()) {
+            if (index !in indices[i]) {
+                all++
+                val featureSubspace = featureSubspaces[i]
+                val transformedInstance = SubspaceClassifierInstance(instance, featureSubspace)
+                val classId = tree.getSupposedClassId(transformedInstance)
+                if (classId != instance.classId) {
+                    errors++
+                }
+            }
+        }
+        return errors / all
+    }
+
+    private fun isSameValues(values: DoubleArray): Boolean = values.all { it == values[0] }
+
+    private fun variance(values: DoubleArray, mean: Double): Double {
+        if (values.size == 1) {
+            return 0.0
+        }
+        return values.map { v -> (v - mean) * (v - mean) }.sum() / (values.size - 1)
+    }
+
     private data class TreeInfo(val tree: DecisionTree, val featureSubspace: IntArray, val indices: Set<Int>)
 
-    private class FeatureSubspaceClassifierInstance(val instance: ClassifiedInstance, val featureSubspace: IntArray) : ClassifiedInstance by instance {
-        override fun getAttributeNumber(): Int = featureSubspace.size
-        override fun getAttributeName(i: Int): String = instance.getAttributeName(featureSubspace[i])
-        override fun getAttributeValue(i: Int): Double = instance.getAttributeValue(featureSubspace[i])
-        override fun getValues(): DoubleArray = DoubleArray(featureSubspace.size) { i -> getAttributeValue(i) }
-        override fun toString(): String = "${values.joinToString(", ", "[", "]")} -> $classId"
+    private class AttributeTransformClassifierInstance(
+            val instance: ClassifiedInstance,
+            val index: Int,
+            val value: Double
+    ) : ClassifiedInstance by instance {
+        override fun getAttributeValue(i: Int): Double = if (i == index) value else instance.getAttributeValue(i)
+        override fun getValues(): DoubleArray = DoubleArray(attributeNumber) { i -> getAttributeValue(i) }
     }
 }

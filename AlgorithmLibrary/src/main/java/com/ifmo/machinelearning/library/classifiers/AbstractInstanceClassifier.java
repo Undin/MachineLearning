@@ -9,7 +9,10 @@ import java.util.List;
  */
 public abstract class AbstractInstanceClassifier extends AbstractClassifier<ClassifiedInstance> {
 
+    protected final int attributeNumber;
+
     public AbstractInstanceClassifier(List<ClassifiedInstance> data) {
         super(data);
+        this.attributeNumber = data.get(0).getAttributeNumber();
     }
 }
