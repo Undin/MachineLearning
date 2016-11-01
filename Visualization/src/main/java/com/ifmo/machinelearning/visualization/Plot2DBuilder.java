@@ -21,8 +21,13 @@ public class Plot2DBuilder {
     }
 
     public void show() {
+        show("", 600, 600);
+    }
+
+    public void show(String title, int width, int height) {
         JFrame frame = new JFrame();
-        frame.setSize(600, 600);
+        frame.setTitle(title);
+        frame.setSize(width, height);
         frame.setContentPane(plot);
         frame.setVisible(true);
     }
