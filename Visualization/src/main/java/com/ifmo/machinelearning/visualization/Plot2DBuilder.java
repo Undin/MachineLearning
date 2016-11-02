@@ -3,6 +3,7 @@ package com.ifmo.machinelearning.visualization;
 import org.math.plot.Plot2DPanel;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created by Whiplash on 30.04.2014.
@@ -18,6 +19,11 @@ public class Plot2DBuilder {
 
     public void addPlot(String plotName, double[] x, double[] y) {
         plot.addLinePlot(plotName, x, y);
+    }
+
+
+    public void addPlot(String plotName, Color color, double[] x, double[] y) {
+        plot.addLinePlot(plotName, color, x, y);
     }
 
     public void show() {

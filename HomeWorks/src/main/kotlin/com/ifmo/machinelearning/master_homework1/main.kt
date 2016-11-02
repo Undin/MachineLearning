@@ -1,6 +1,7 @@
 package com.ifmo.machinelearning.master_homework1
 
 import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -34,6 +35,7 @@ fun main(args: Array<String>) {
     libsvm.svm.svm_set_print_string_function { it ->  }
 
     calculateAttributeEstimation(train)
+    evalWithAllAttributes(train, test)
     eval(train, test)
 }
 
@@ -43,6 +45,14 @@ private fun calculateAttributeEstimation(data: List<ClassifiedInstance>) {
         val info = fr.ranker.rank(data)
         MAPPER.writeValue(File("$ESTIMATION_FOLDER/${fr.name.toLowerCase()}.json"), info)
     }
+}
+
+private fun evalWithAllAttributes(train: List<ClassifiedInstance>, test: List<ClassifiedInstance>) {
+    val results = HashMap<String, Double>()
+    for (c in Classifier.values()) {
+        results[c.name.toLowerCase()] = eval(c.classifier, train, test)
+    }
+    MAPPER.writeValue(File("$CLASSIFICATION_RESULTS/results.json"), results)
 }
 
 private fun eval(train: List<ClassifiedInstance>, test: List<ClassifiedInstance>) {
@@ -59,8 +69,6 @@ private fun eval(train: List<ClassifiedInstance>, test: List<ClassifiedInstance>
         File("$CLASSIFICATION_RESULTS/$name").mkdirs()
 
         estimationMap.forEach { rankerName, estimation ->
-            val allAttribute = eval(classifier, train, test)
-
             val sortedIndices = estimation.map { it.index }
             val bestAttributes = IntStream.range(1, NUMBER_OF_ESTIMATED_ATTRIBUTES + 1)
                     .parallel()
@@ -87,8 +95,8 @@ private fun eval(train: List<ClassifiedInstance>, test: List<ClassifiedInstance>
                 res
             }.toArray()
 
-            MAPPER.writeValue(File("$CLASSIFICATION_RESULTS/$name/$name-$rankerName-best.json"), Result(allAttribute, bestAttributes))
-            MAPPER.writeValue(File("$CLASSIFICATION_RESULTS/$name/$name-$rankerName-worst.json"), Result(allAttribute, worstAttributes))
+            MAPPER.writeValue(File("$CLASSIFICATION_RESULTS/$name/$name-$rankerName-best.json"), Result(bestAttributes))
+            MAPPER.writeValue(File("$CLASSIFICATION_RESULTS/$name/$name-$rankerName-worst.json"), Result(worstAttributes))
         }
     }
 }
@@ -125,7 +133,7 @@ fun List<ClassifiedInstance>.toInstances(): Instances {
     return instances
 }
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Result @JsonCreator constructor(
-        @param:JsonProperty("allAttributes") @get:JsonProperty("allAttributes") val allAttributes: Double,
         @param:JsonProperty("bestAttributes") @get:JsonProperty("bestAttributes") val bestAttributes: DoubleArray
 )
