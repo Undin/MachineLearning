@@ -21,9 +21,16 @@ public class Plot2DBuilder {
         plot.addLinePlot(plotName, x, y);
     }
 
-
     public void addPlot(String plotName, Color color, double[] x, double[] y) {
         plot.addLinePlot(plotName, color, x, y);
+    }
+
+    public void addBar(String plotName, double[] x) {
+        plot.addBarPlot(plotName, x);
+    }
+
+    public void addBar(String plotName, Color color, double[] x) {
+        plot.addBarPlot(plotName, color, x);
     }
 
     public void show() {
